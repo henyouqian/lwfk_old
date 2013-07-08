@@ -3,6 +3,7 @@
 #include "lwFileSys.h"
 #include "libraries/tinyxml2/tinyxml2.h"
 #include "lwLog.h"
+#include "PVRTResourceFile.h"
 
 namespace lw
 {
@@ -74,7 +75,9 @@ EffectsRes::EffectsRes(const char *file, bool &ok)
 {
     assert(file);
     tinyxml2::XMLDocument doc;
-    tinyxml2::XMLError err = doc.LoadFile(_f(file));
+    CPVRTResourceFile resFile(file);
+    tinyxml2::XMLError err = doc.Parse((const char*)resFile.DataPtr(), resFile.Size());
+//    tinyxml2::XMLError err = doc.LoadFile(_f(file));
     assert(err == tinyxml2::XML_SUCCESS);
     const tinyxml2::XMLElement *pElemLwfx = doc.RootElement();
     const tinyxml2::XMLElement *pElemVS = pElemLwfx->FirstChildElement("vs");

@@ -1,11 +1,11 @@
-package com.powervr.OGLES2BinaryShader;
+package com.powervr.OGLES2IntroducingPFX;
 
 import android.app.NativeActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 import android.view.Gravity;
 
-public class OGLES2BinaryShader extends NativeActivity
+public class OGLES2IntroducingPFX extends NativeActivity
 {
     @Override
     protected void onCreate (Bundle savedInstanceState)

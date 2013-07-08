@@ -4,6 +4,7 @@
 #include "lwLog.h"
 #include "soil/SOIL.h"
 #include <map>
+#include "PVRTResourceFile.h"
 
 namespace lw {
 
@@ -23,9 +24,12 @@ namespace lw {
 			_glId = -1;
 			return;
 		}
-		_f fpath(fileName);
-        if (fpath) {
-            loadAndCreateOgl(fpath);
+    
+        CPVRTResourceFile resFile(fileName);
+        if (resFile.IsOpen()) {
+            if (loadAndCreateOgl((const unsigned char*)resFile.DataPtr(), resFile.Size())) {
+                lwerror("Failed to load texture: path=" << fileName);
+            }
         } else {
             lwerror("texture file is not exist: " << fileName);
             return;
@@ -33,8 +37,8 @@ namespace lw {
         ok = true;
 	}
 
-	void TextureRes::loadAndCreateOgl(const char* path) {
-		unsigned char* pImgData = SOIL_load_image(path, &_w, &_h, &_numChannels, SOIL_LOAD_AUTO);
+	int TextureRes::loadAndCreateOgl(const unsigned char* buf, int buflen) {
+		unsigned char* pImgData = SOIL_load_image_from_memory(buf, buflen, &_w, &_h, &_numChannels, SOIL_LOAD_AUTO);
 		_glId = SOIL_internal_create_OGL_texture(pImgData, _w, _h, _numChannels,
 			SOIL_CREATE_NEW_ID, 0,
 			GL_TEXTURE_2D, GL_TEXTURE_2D,
@@ -43,9 +47,10 @@ namespace lw {
 		SOIL_free_image_data(pImgData);
 		
 		if ( _glId == 0 ){
-			lwerror("Failed to load texture: path=" << path);
-			_glId = -1;
+            _glId = -1;
+            return -1;
 		}
+        return 0;
         //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
         //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 	}

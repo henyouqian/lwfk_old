@@ -19,7 +19,6 @@
 #include "iOS/PVRShellOS.h"
 #include "PVRShellImpl.h"
 
-#include "spriteTask.h"
 
 //CONSTANTS:
 
@@ -280,16 +279,6 @@ const int kFPS = 60.0;
 	m_pPVRShellInit->m_vec3Accel[1] = acceleration.y;
 	m_pPVRShellInit->m_vec3Accel[2] = acceleration.z;
 	
-}
-
-void lwapp_init()
-{
-    gSpriteTask.start();
-}
-
-void lwapp_quit()
-{
-    
 }
 
 

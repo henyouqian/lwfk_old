@@ -1,7 +1,10 @@
+#include "lwPrefix.h"
 #include "lwApp.h"
 #include "lwTask.h"
 #include "lwSprite.h"
 #include "PVRShell.h"
+#include "PVRTResourceFile.h"
+#include "lwLog.h"
 
 namespace {
     class App : public PVRShell
@@ -9,6 +12,8 @@ namespace {
     public:
         App(){}
         virtual bool InitApplication() {
+            CPVRTResourceFile::SetReadPath((char*)PVRShellGet(prefReadPath));
+            CPVRTResourceFile::SetLoadReleaseFunctions(PVRShellGet(prefLoadFileFunc), PVRShellGet(prefReleaseFileFunc));
             return true;
         }
         virtual bool InitView() {
@@ -48,4 +53,8 @@ PVRTVec2 getScreenSize() {
     float width = (float)_app->PVRShellGet(prefWidth);
     float height = (float)_app->PVRShellGet(prefHeight);
     return PVRTVec2(width, height);
+}
+
+const char* getReadPath() {
+    return (const char*)_app->PVRShellGet(prefReadPath);
 }

@@ -1,3 +1,4 @@
+#include "lwPrefix.h"
 #include "lwRes.h"
 
 namespace lw {

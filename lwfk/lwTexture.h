@@ -2,7 +2,6 @@
 #define __LW_TEXTURE_H__
 
 #include "lwRes.h"
-#include <OpenGLES/ES2/gl.h>
 
 namespace lw{
 
@@ -18,7 +17,7 @@ namespace lw{
 	private:
 		~TextureRes();
 		TextureRes(const char* filename, bool& ok);
-		void loadAndCreateOgl(const char* path);
+		int loadAndCreateOgl(const unsigned char* buf, int buflen);
 
 	private:
 		GLuint _glId;

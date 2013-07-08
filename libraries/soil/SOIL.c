@@ -29,6 +29,10 @@
 	#include <OpenGLES/ES1/glext.h>
 	//#include <Carbon/Carbon.h>
 	#define APIENTRY
+#elif defined(__ANDROID__)      //liwei add from here
+    #include <GLES2/gl2.h>
+    #include <GLES2/gl2ext.h>
+    #define APIENTRY            //liwei add to here
 #else
 	#include <GL/gl.h>
 	#include <GL/glx.h>
@@ -1996,6 +2000,8 @@ int query_DXT_capability( void )
 //				CFRelease( bundleURL );
 //				CFRelease( extensionName );
 //				CFRelease( bundle );
+            #elif defined(__ANDROID__) //liwei add
+                //pass: liwei add
 			#else
 				ext_addr = (P_SOIL_GLCOMPRESSEDTEXIMAGE2DPROC)
 						glXGetProcAddressARB

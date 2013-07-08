@@ -54,8 +54,8 @@
 		B37FC6591773419C00A22473 /* lwTouch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC6571773419C00A22473 /* lwTouch.cpp */; };
 		B3A7EFFE175AFF2A002DE3F0 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3A7EFF9175AFF2A002DE3F0 /* tinyxml2.cpp */; };
 		B3A7F009175B0408002DE3F0 /* lwEffects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3A7F007175B0408002DE3F0 /* lwEffects.cpp */; };
+		B3CF95C0178740C100E0B6B9 /* lwLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3CF95BF178740C100E0B6B9 /* lwLog.cpp */; };
 		B3F760951759E24B00DE9BBF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F760941759E24B00DE9BBF /* Foundation.framework */; };
-		B3F760A41759E28E00DE9BBF /* lwStage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3F760A21759E28E00DE9BBF /* lwStage.cpp */; };
 		B3F760EA1759E3B900DE9BBF /* lwApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3F760E81759E3B800DE9BBF /* lwApp.cpp */; };
 		B3FDD0E3176A369000B82210 /* lwTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3FDD0E1176A369000B82210 /* lwTask.cpp */; };
 /* End PBXBuildFile section */
@@ -184,10 +184,9 @@
 		B3A7F004175B0148002DE3F0 /* lwPrefix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lwPrefix.h; sourceTree = "<group>"; };
 		B3A7F007175B0408002DE3F0 /* lwEffects.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwEffects.cpp; sourceTree = "<group>"; };
 		B3A7F008175B0408002DE3F0 /* lwEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwEffects.h; sourceTree = "<group>"; };
+		B3CF95BF178740C100E0B6B9 /* lwLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwLog.cpp; sourceTree = "<group>"; };
 		B3F760911759E24B00DE9BBF /* liblwfk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblwfk.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3F760941759E24B00DE9BBF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		B3F760A21759E28E00DE9BBF /* lwStage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwStage.cpp; sourceTree = "<group>"; };
-		B3F760A31759E28E00DE9BBF /* lwStage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwStage.h; sourceTree = "<group>"; };
 		B3F760E81759E3B800DE9BBF /* lwApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwApp.cpp; sourceTree = "<group>"; };
 		B3F760E91759E3B800DE9BBF /* lwApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwApp.h; sourceTree = "<group>"; };
 		B3FDD0E1176A369000B82210 /* lwTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwTask.cpp; sourceTree = "<group>"; };
@@ -439,11 +438,10 @@
 				B3A7F008175B0408002DE3F0 /* lwEffects.h */,
 				B34A6E96176F779C002DBC4A /* lwRes.cpp */,
 				B3A7F003175B005D002DE3F0 /* lwRes.h */,
+				B3CF95BF178740C100E0B6B9 /* lwLog.cpp */,
 				B37724BF175A67EA0059300F /* lwLog.h */,
 				B3F760E81759E3B800DE9BBF /* lwApp.cpp */,
 				B3F760E91759E3B800DE9BBF /* lwApp.h */,
-				B3F760A21759E28E00DE9BBF /* lwStage.cpp */,
-				B3F760A31759E28E00DE9BBF /* lwStage.h */,
 				B37724BC175A62A70059300F /* lwFileSys.h */,
 				B37724BD175A62A70059300F /* lwFileSys.mm */,
 				B3A7F004175B0148002DE3F0 /* lwPrefix.h */,
@@ -512,7 +510,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B306FB031770A86800AA4963 /* PVRTVertex.cpp in Sources */,
-				B3F760A41759E28E00DE9BBF /* lwStage.cpp in Sources */,
 				B306FAE91770A86800AA4963 /* PVRTPFXSemantics.cpp in Sources */,
 				B306FB001770A86800AA4963 /* PVRTTriStrip.cpp in Sources */,
 				B306FAF21770A86800AA4963 /* PVRTMatrixF.cpp in Sources */,
@@ -530,6 +527,7 @@
 				B306FAF91770A86800AA4963 /* PVRTQuaternionX.cpp in Sources */,
 				B306FAF31770A86800AA4963 /* PVRTMatrixX.cpp in Sources */,
 				B306FB011770A86800AA4963 /* PVRTUnicode.cpp in Sources */,
+				B3CF95C0178740C100E0B6B9 /* lwLog.cpp in Sources */,
 				B306FADF1770A86800AA4963 /* PVRShellAPI.cpp in Sources */,
 				B306FAE51770A86800AA4963 /* PVRShell.cpp in Sources */,
 				B306FAE71770A86800AA4963 /* PVRTgles2Ext.cpp in Sources */,

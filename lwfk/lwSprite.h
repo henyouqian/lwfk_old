@@ -2,7 +2,6 @@
 #define __LW_SPRITE_H__
 
 #include "lwfk/lwColor.h"
-#include <OpenGLES/ES2/gl.h>
 
 namespace lw{
     

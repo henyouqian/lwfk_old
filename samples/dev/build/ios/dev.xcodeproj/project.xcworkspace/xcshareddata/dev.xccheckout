@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>64A88E9B-436C-4AB8-A625-7A57920C57D9</string>
+	<key>IDESourceControlProjectName</key>
+	<string>dev</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>B06B3A91-C182-47FE-8B62-F70D792EBF0A</key>
+		<string>https://github.com/henyouqian/lwfk.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>samples/dev/build/ios/dev.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>B06B3A91-C182-47FE-8B62-F70D792EBF0A</key>
+		<string>../../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/henyouqian/lwfk.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>B06B3A91-C182-47FE-8B62-F70D792EBF0A</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>B06B3A91-C182-47FE-8B62-F70D792EBF0A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>lwfk</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -18,6 +18,7 @@
 		B37FC675177404C400A22473 /* sliderTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC671177404C400A22473 /* sliderTask.cpp */; };
 		B37FC676177404C400A22473 /* spriteTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC673177404C400A22473 /* spriteTask.cpp */; };
 		B37FC67F177405DE00A22473 /* liblwfk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B37FC67C1774051000A22473 /* liblwfk.a */; };
+		B37FC6851775668000A22473 /* app.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC6841775668000A22473 /* app.cpp */; };
 		B3F513851770D20D00C92D76 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F513841770D20D00C92D76 /* QuartzCore.framework */; };
 		B3F760B21759E2DE00DE9BBF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F760B11759E2DE00DE9BBF /* UIKit.framework */; };
 		B3F760B41759E2DE00DE9BBF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F760B31759E2DE00DE9BBF /* Foundation.framework */; };
@@ -62,6 +63,8 @@
 		B37FC673177404C400A22473 /* spriteTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spriteTask.cpp; sourceTree = "<group>"; };
 		B37FC674177404C400A22473 /* spriteTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spriteTask.h; sourceTree = "<group>"; };
 		B37FC6771774051000A22473 /* lwfk.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = lwfk.xcodeproj; path = ../../../../lwfk.xcodeproj; sourceTree = "<group>"; };
+		B37FC6821774E85600A22473 /* dev-Prefix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "dev-Prefix.h"; path = "../../../dev-Prefix.h"; sourceTree = "<group>"; };
+		B37FC6841775668000A22473 /* app.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = app.cpp; path = ../../../app.cpp; sourceTree = "<group>"; };
 		B3F513841770D20D00C92D76 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B3F760AE1759E2DE00DE9BBF /* dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3F760B11759E2DE00DE9BBF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -72,7 +75,6 @@
 		B3F760BD1759E2DE00DE9BBF /* dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "dev-Info.plist"; sourceTree = "<group>"; };
 		B3F760BF1759E2DE00DE9BBF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B3F760C11759E2DE00DE9BBF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		B3F760C31759E2DE00DE9BBF /* dev-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "dev-Prefix.pch"; sourceTree = "<group>"; };
 		B3F760C71759E2DE00DE9BBF /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		B3F760C91759E2DE00DE9BBF /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		B3F760CB1759E2DE00DE9BBF /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -181,6 +183,8 @@
 		B3F760BB1759E2DE00DE9BBF /* dev */ = {
 			isa = PBXGroup;
 			children = (
+				B37FC6841775668000A22473 /* app.cpp */,
+				B37FC6821774E85600A22473 /* dev-Prefix.h */,
 				B37FC670177404C400A22473 /* task */,
 				B340756B17717A9700F53C2B /* AppController.mm */,
 				B340756C17717A9700F53C2B /* AppController.h */,
@@ -195,7 +199,6 @@
 				B3F760BD1759E2DE00DE9BBF /* dev-Info.plist */,
 				B3F760BE1759E2DE00DE9BBF /* InfoPlist.strings */,
 				B3F760C11759E2DE00DE9BBF /* main.m */,
-				B3F760C31759E2DE00DE9BBF /* dev-Prefix.pch */,
 				B3F760C71759E2DE00DE9BBF /* Default.png */,
 				B3F760C91759E2DE00DE9BBF /* Default@2x.png */,
 				B3F760CB1759E2DE00DE9BBF /* Default-568h@2x.png */,
@@ -293,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B37FC675177404C400A22473 /* sliderTask.cpp in Sources */,
+				B37FC6851775668000A22473 /* app.cpp in Sources */,
 				B37FC676177404C400A22473 /* spriteTask.cpp in Sources */,
 				B340756D17717A9700F53C2B /* AppController.mm in Sources */,
 				B3F760C21759E2DE00DE9BBF /* main.m in Sources */,
@@ -384,7 +388,7 @@
 			buildSettings = {
 				COMPRESS_PNG_FILES = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "dev/dev-Prefix.pch";
+				GCC_PREFIX_HEADER = "dev/dev-Prefix.h";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					BUILD_OGLES2,
@@ -409,7 +413,7 @@
 			buildSettings = {
 				COMPRESS_PNG_FILES = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "dev/dev-Prefix.pch";
+				GCC_PREFIX_HEADER = "dev/dev-Prefix.h";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					BUILD_OGLES2,
 					TARGET_OS_IPHONE,
