@@ -1,3 +1,0 @@
-# view AndroidManifest.xml #generated:10
--keep class com.powervr.OGLES2IntroducingPFX.OGLES2IntroducingPFX { <init>(...); }
-
