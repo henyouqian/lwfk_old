@@ -6,7 +6,6 @@
 namespace lw
 {
 
-
     Camera::Camera()
     {
         perspective(PVRT_PIf/3.f, 3.0f/2.0f, 1, 1000);
@@ -16,17 +15,17 @@ namespace lw
         lookat(eye, at, up);
     }
 
-    void Camera::getView(PVRTMATRIX& mat)
+    void Camera::getView(PVRTMATRIX& mat) const
     {
         mat = _viewMatrix;
     }
 
-    void Camera::getProj(PVRTMATRIX& mat)
+    void Camera::getProj(PVRTMATRIX& mat) const
     {
         mat = _projMatrix;
     }
 
-    void Camera::getViewProj(PVRTMATRIX& mat)
+    void Camera::getViewProj(PVRTMATRIX& mat) const
     {
     //    PVRTMatrixMultiplyF(mat, _projMatrix, _viewMatrix);
         PVRTMatrixMultiplyF(mat, _viewMatrix, _projMatrix);
@@ -66,6 +65,16 @@ namespace lw
         _ortho(_projMatrix, 0, w, -h, 0, zn, zf);
         //PVRTMatrixOrthoRH is not correct
         //PVRTMatrixOrthoRH(_projMatrix, w, h, zn, zf, false);
+    }
+    
+    static Camera* g_current_camera = NULL;
+    
+    Camera* Camera::getCurrent() {
+        return g_current_camera;
+    }
+    
+    void Camera::setCurrent(Camera* pCamera) {
+        g_current_camera = pCamera;
     }
 
 } //namespace lw

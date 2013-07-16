@@ -5,12 +5,21 @@
 
 void ainfo(const char* msg);
 
-#ifdef NO_LWLOG
-    #define lwinfo(_e) ((void)0)
-    #define lwerror(_e) ((void)0)
+
+#ifndef REMOVE_LOGGING
+    #ifdef ANDROID
+        #define lwerror(message, ...) \
+            do { __android_log_print(ANDROID_LOG_DEBUG, "lw", "[E:%s:%d] " message, FLE, __LINE__, ##__VA_ARGS__); } while (0)
+        #define lwinfo(message, ...) \
+            do { __android_log_print(ANDROID_LOG_DEBUG, "lw", "[I:%s:%d] " message, FLE, __LINE__, ##__VA_ARGS__); } while (0)
+    #else
+        #define lwerror(message, ...) \
+            do { std::printf("[E:%s:%d] " message "\n", FLE, __LINE__,  ##__VA_ARGS__); } while(0)
+        #define lwinfo(message, ...) \
+            do { std::printf("[I:%s:%d] " message "\n", FLE, __LINE__,  ##__VA_ARGS__); } while(0)
+    #endif
 #else
-    #define lwinfo(_e) std::cout<<"Info: " << FLE << " - " << __LINE__ << " - " << __FUNCTION__ << ":\n" << _e << "\n";
-    #define lwerror(_e) std::cout<<"Error: " << FLE << " - " << __LINE__ << " - " <<  __FUNCTION__ << ":\n" << _e << "\n";
+    #define LOG_DEBUG(message, ...) do { } while (0)
 #endif
 
 

@@ -26,6 +26,21 @@ public:
         WORLDVIEWIT,
     };
     
+    /*
+     _position,
+     _normal,
+     _binormal,
+     _tangent,
+     _uv0,
+     _uv1,
+     _uv2,
+     _uv3,
+     _mv,
+     _mvp,
+     _mvi,
+     
+     */
+    
     struct LocSmt
     {
         int location;
@@ -33,6 +48,7 @@ public:
     };
     
     static EffectsRes* create(const char *file);
+    GLuint getProgram();
     int getLocationFromSemantic(EffectsRes::Semantic semantic);
     int getUniformLocation(const char* name);
     void use();

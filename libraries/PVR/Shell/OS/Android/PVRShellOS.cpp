@@ -28,6 +28,8 @@
 #include <android/log.h>
 #include <android/window.h>
 
+#include "lwfk/lwTouch.h"
+
 /*!***************************************************************************
 	Defines
 *****************************************************************************/
@@ -455,6 +457,11 @@ unsigned long PVRShellInit::OsGetTime()
 static int32_t handle_input(struct android_app* app, AInputEvent* event)
 {
 	PVRShellInit* init = (PVRShellInit*) app->userData;
+	int key = AMotionEvent_getPointerId(event, 0);
+	float x = AMotionEvent_getX(event, 0);
+	float y = AMotionEvent_getY(event, 0);
+	float prevX = AMotionEvent_getHistoricalX(event, 0, 1);
+	float prevY = AMotionEvent_getHistoricalY(event, 0, 1);
 
 	if(init)
 	{
@@ -499,6 +506,8 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event)
 						{
 							float vec2TouchPosition[2] = { AMotionEvent_getX(event, 0) / pShell->PVRShellGet(prefWidth), AMotionEvent_getY(event, 0) / pShell->PVRShellGet(prefHeight) };
 							init->TouchBegan(vec2TouchPosition);
+
+							lw::touchBegan(key, x, y, prevX, prevY);
 						}
 						break;
 					}
@@ -510,6 +519,8 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event)
 						{
 							float vec2TouchPosition[2] = { AMotionEvent_getX(event, 0) / pShell->PVRShellGet(prefWidth), AMotionEvent_getY(event, 0) / pShell->PVRShellGet(prefHeight) };
 							init->TouchMoved(vec2TouchPosition);
+							
+							lw::touchMoved(key, x, y, prevX, prevY);
 						}
 						break;
 					}
@@ -520,6 +531,8 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event)
 						{
 							float vec2TouchPosition[2] = { AMotionEvent_getX(event, 0) / pShell->PVRShellGet(prefWidth), AMotionEvent_getY(event, 0) / pShell->PVRShellGet(prefHeight) };
 							init->TouchEnded(vec2TouchPosition);
+
+							lw::touchEnded(key, x, y, prevX, prevY);
 						}
 						break;
 					}

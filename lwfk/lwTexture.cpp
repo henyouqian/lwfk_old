@@ -4,7 +4,7 @@
 #include "lwLog.h"
 #include "soil/SOIL.h"
 #include <map>
-#include "PVRTResourceFile.h"
+#include "PVR/tools/PVRTResourceFile.h"
 
 namespace lw {
 
@@ -20,7 +20,7 @@ namespace lw {
 
 		size_t len = strlen(fileName);
 		if ( len < 4 ) {
-			lwerror("texture file name too short: filepath = " << (const char*)_f(fileName));
+			lwerror("texture file name too short: %s", fileName);
 			_glId = -1;
 			return;
 		}
@@ -28,10 +28,10 @@ namespace lw {
         CPVRTResourceFile resFile(fileName);
         if (resFile.IsOpen()) {
             if (loadAndCreateOgl((const unsigned char*)resFile.DataPtr(), resFile.Size())) {
-                lwerror("Failed to load texture: path=" << fileName);
+                lwerror("Failed to load texture: %s", fileName);
             }
         } else {
-            lwerror("texture file is not exist: " << fileName);
+            lwerror("texture file is not exist: %s", fileName);
             return;
         }
         ok = true;
@@ -39,6 +39,7 @@ namespace lw {
 
 	int TextureRes::loadAndCreateOgl(const unsigned char* buf, int buflen) {
 		unsigned char* pImgData = SOIL_load_image_from_memory(buf, buflen, &_w, &_h, &_numChannels, SOIL_LOAD_AUTO);
+        assert(pImgData);
 		_glId = SOIL_internal_create_OGL_texture(pImgData, _w, _h, _numChannels,
 			SOIL_CREATE_NEW_ID, 0,
 			GL_TEXTURE_2D, GL_TEXTURE_2D,
@@ -62,7 +63,6 @@ namespace lw {
 	}
 	TextureRes* TextureRes::create(const char* fileName){
 		assert(fileName);
-		std::string strFileName = fileName;
         
         TextureRes *pRes = (TextureRes*)_resMgr.getRes(fileName);
         if (pRes) {

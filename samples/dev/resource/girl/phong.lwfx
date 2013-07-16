@@ -1,0 +1,55 @@
+<lwfx>
+    <vs>
+        attribute mediump vec3 _position;
+        attribute mediump vec2 _uv0;
+        attribute mediump vec3 _normal;
+
+        uniform mat4 _mv;
+        uniform mat4 _mvp;
+        uniform mediump mat3 _mvit;
+
+        varying highp vec2 v_texCoord;
+        varying mediump vec3 v_normal;
+        varying mediump vec3 v_eyeSpaceVexPos;
+
+
+        void main()
+        {
+            gl_Position = _mvp * vec4(_position, 1.0);
+            v_texCoord = _uv0;
+            v_normal = normalize(_mvit * _normal);
+            v_eyeSpaceVexPos = vec3(_mv * vec4(_position, 1.0));
+        }
+    </vs>
+    <fs>
+        varying highp vec2 v_texCoord;
+        varying mediump vec3 v_normal;
+        varying mediump vec3 v_eyeSpaceVexPos;
+        uniform sampler2D u_texture;
+        uniform mediump vec3 u_lightdir;
+        uniform mediump float u_shininess;
+        uniform mediump float u_ambient;
+        uniform mediump float u_diffuse;
+        uniform mediump float u_specular;
+
+        const mediump vec3 lightDir = normalize(vec3(0.5, 0.5, 1.0));
+
+        void main()
+        {
+            mediump vec3 eyeDir = -normalize(v_eyeSpaceVexPos);
+            //mediump vec3 lightDir = normalize(u_lightdir - v_eyeSpaceVexPos);
+            
+
+            lowp float NdotL = max(dot(v_normal, lightDir), 0.0);
+            lowp float diffuse = NdotL;
+            lowp float specular = 0.0;
+
+            if ( u_specular > 0.01 ){
+                mediump vec3 halfVector = normalize(lightDir + eyeDir);
+                lowp float NdotH = max(dot(v_normal, halfVector), 0.0);       
+                specular = pow(NdotH, u_shininess);
+            }
+            gl_FragColor = texture2D(u_texture, v_texCoord)*(u_ambient+diffuse*u_diffuse)+specular*u_specular;
+        }
+    </fs>
+</lwfx>

@@ -10,7 +10,6 @@
 		B340756D17717A9700F53C2B /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = B340756B17717A9700F53C2B /* AppController.mm */; };
 		B37FC6691774047D00A22473 /* clod2.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B37FC6611774047D00A22473 /* clod2.lwfx */; };
 		B37FC66A1774047D00A22473 /* marchingCube.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B37FC6621774047D00A22473 /* marchingCube.lwfx */; };
-		B37FC66B1774047D00A22473 /* phong.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B37FC6631774047D00A22473 /* phong.lwfx */; };
 		B37FC66C1774047D00A22473 /* phongNormalMap.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B37FC6641774047D00A22473 /* phongNormalMap.lwfx */; };
 		B37FC66D1774047D00A22473 /* sprite.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B37FC6651774047D00A22473 /* sprite.lwfx */; };
 		B37FC66E1774047D00A22473 /* texture.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B37FC6661774047D00A22473 /* texture.lwfx */; };
@@ -19,6 +18,11 @@
 		B37FC676177404C400A22473 /* spriteTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC673177404C400A22473 /* spriteTask.cpp */; };
 		B37FC67F177405DE00A22473 /* liblwfk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B37FC67C1774051000A22473 /* liblwfk.a */; };
 		B37FC6851775668000A22473 /* app.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC6841775668000A22473 /* app.cpp */; };
+		B3D2604F1795BD8F00C1D576 /* girl.lwmdl in Resources */ = {isa = PBXBuildFile; fileRef = B3D2604A1795BD8F00C1D576 /* girl.lwmdl */; };
+		B3D260501795BD8F00C1D576 /* girl.png in Resources */ = {isa = PBXBuildFile; fileRef = B3D2604B1795BD8F00C1D576 /* girl.png */; };
+		B3D260511795BD8F00C1D576 /* girl.pod in Resources */ = {isa = PBXBuildFile; fileRef = B3D2604C1795BD8F00C1D576 /* girl.pod */; };
+		B3D260521795BD8F00C1D576 /* girl.pvr in Resources */ = {isa = PBXBuildFile; fileRef = B3D2604D1795BD8F00C1D576 /* girl.pvr */; };
+		B3D260531795BD8F00C1D576 /* phong.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B3D2604E1795BD8F00C1D576 /* phong.lwfx */; };
 		B3F513851770D20D00C92D76 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F513841770D20D00C92D76 /* QuartzCore.framework */; };
 		B3F760B21759E2DE00DE9BBF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F760B11759E2DE00DE9BBF /* UIKit.framework */; };
 		B3F760B41759E2DE00DE9BBF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F760B31759E2DE00DE9BBF /* Foundation.framework */; };
@@ -53,7 +57,6 @@
 		B340756C17717A9700F53C2B /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		B37FC6611774047D00A22473 /* clod2.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clod2.lwfx; sourceTree = "<group>"; };
 		B37FC6621774047D00A22473 /* marchingCube.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = marchingCube.lwfx; sourceTree = "<group>"; };
-		B37FC6631774047D00A22473 /* phong.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = phong.lwfx; sourceTree = "<group>"; };
 		B37FC6641774047D00A22473 /* phongNormalMap.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = phongNormalMap.lwfx; sourceTree = "<group>"; };
 		B37FC6651774047D00A22473 /* sprite.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sprite.lwfx; sourceTree = "<group>"; };
 		B37FC6661774047D00A22473 /* texture.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = texture.lwfx; sourceTree = "<group>"; };
@@ -65,6 +68,11 @@
 		B37FC6771774051000A22473 /* lwfk.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = lwfk.xcodeproj; path = ../../../../lwfk.xcodeproj; sourceTree = "<group>"; };
 		B37FC6821774E85600A22473 /* dev-Prefix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "dev-Prefix.h"; path = "../../../dev-Prefix.h"; sourceTree = "<group>"; };
 		B37FC6841775668000A22473 /* app.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = app.cpp; path = ../../../app.cpp; sourceTree = "<group>"; };
+		B3D2604A1795BD8F00C1D576 /* girl.lwmdl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = girl.lwmdl; sourceTree = "<group>"; };
+		B3D2604B1795BD8F00C1D576 /* girl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = girl.png; sourceTree = "<group>"; };
+		B3D2604C1795BD8F00C1D576 /* girl.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = girl.pod; sourceTree = "<group>"; };
+		B3D2604D1795BD8F00C1D576 /* girl.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = girl.pvr; sourceTree = "<group>"; };
+		B3D2604E1795BD8F00C1D576 /* phong.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = phong.lwfx; sourceTree = "<group>"; };
 		B3F513841770D20D00C92D76 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B3F760AE1759E2DE00DE9BBF /* dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3F760B11759E2DE00DE9BBF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -100,6 +108,7 @@
 		B37FC65F1774047D00A22473 /* resource */ = {
 			isa = PBXGroup;
 			children = (
+				B3D260491795BD8F00C1D576 /* girl */,
 				B37FC6601774047D00A22473 /* effects */,
 				B37FC6671774047D00A22473 /* texture */,
 			);
@@ -112,7 +121,6 @@
 			children = (
 				B37FC6611774047D00A22473 /* clod2.lwfx */,
 				B37FC6621774047D00A22473 /* marchingCube.lwfx */,
-				B37FC6631774047D00A22473 /* phong.lwfx */,
 				B37FC6641774047D00A22473 /* phongNormalMap.lwfx */,
 				B37FC6651774047D00A22473 /* sprite.lwfx */,
 				B37FC6661774047D00A22473 /* texture.lwfx */,
@@ -146,6 +154,18 @@
 				B37FC67C1774051000A22473 /* liblwfk.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B3D260491795BD8F00C1D576 /* girl */ = {
+			isa = PBXGroup;
+			children = (
+				B3D2604A1795BD8F00C1D576 /* girl.lwmdl */,
+				B3D2604B1795BD8F00C1D576 /* girl.png */,
+				B3D2604C1795BD8F00C1D576 /* girl.pod */,
+				B3D2604D1795BD8F00C1D576 /* girl.pvr */,
+				B3D2604E1795BD8F00C1D576 /* phong.lwfx */,
+			);
+			path = girl;
 			sourceTree = "<group>";
 		};
 		B3F760A51759E2DE00DE9BBF = {
@@ -278,13 +298,17 @@
 				B37FC66D1774047D00A22473 /* sprite.lwfx in Resources */,
 				B3F760C81759E2DE00DE9BBF /* Default.png in Resources */,
 				B3F760CA1759E2DE00DE9BBF /* Default@2x.png in Resources */,
+				B3D260501795BD8F00C1D576 /* girl.png in Resources */,
+				B3D260531795BD8F00C1D576 /* phong.lwfx in Resources */,
+				B3D260521795BD8F00C1D576 /* girl.pvr in Resources */,
 				B37FC66F1774047D00A22473 /* img05.png in Resources */,
 				B37FC6691774047D00A22473 /* clod2.lwfx in Resources */,
 				B37FC66A1774047D00A22473 /* marchingCube.lwfx in Resources */,
 				B37FC66E1774047D00A22473 /* texture.lwfx in Resources */,
 				B37FC66C1774047D00A22473 /* phongNormalMap.lwfx in Resources */,
-				B37FC66B1774047D00A22473 /* phong.lwfx in Resources */,
+				B3D2604F1795BD8F00C1D576 /* girl.lwmdl in Resources */,
 				B3F760CC1759E2DE00DE9BBF /* Default-568h@2x.png in Resources */,
+				B3D260511795BD8F00C1D576 /* girl.pod in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -220,8 +220,8 @@ const int kFPS = 60.0;
 	[_window makeKeyAndVisible];
 	
 	//Configure and start accelerometer
-	[[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / kAccelerometerFrequency)];
-	[[UIAccelerometer sharedAccelerometer] setDelegate:self];
+//	[[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / kAccelerometerFrequency)];
+//	[[UIAccelerometer sharedAccelerometer] setDelegate:self];
 
 	[UIApplication sharedApplication].idleTimerDisabled = YES;
 	

@@ -13,6 +13,7 @@
     #include <cassert>
     #include <iostream>
     #include <map>
+    #include <limits>
     #include "PVRTMatrix.h"
     #include "PVRTFixedPoint.h"
     #include "PVRTVector.h"

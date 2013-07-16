@@ -48,6 +48,7 @@
 		B34A6EA6176F7CA2002DBC4A /* stb_image_aug.c in Sources */ = {isa = PBXBuildFile; fileRef = B34A6E9F176F7CA2002DBC4A /* stb_image_aug.c */; };
 		B34A6EA917700929002DBC4A /* lwTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B34A6EA717700929002DBC4A /* lwTexture.cpp */; };
 		B34A6ECB17701026002DBC4A /* lwColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B34A6EC917701026002DBC4A /* lwColor.cpp */; };
+		B370842D178C825700C71C5D /* lwMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B370842B178C825700C71C5D /* lwMaterial.cpp */; };
 		B37724BE175A62A70059300F /* lwFileSys.mm in Sources */ = {isa = PBXBuildFile; fileRef = B37724BD175A62A70059300F /* lwFileSys.mm */; };
 		B37FC64E1771BB4900A22473 /* PVRTPrint3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC64B1771BB4900A22473 /* PVRTPrint3D.cpp */; };
 		B37FC6511771BEE400A22473 /* lwSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC6501771BEE400A22473 /* lwSprite.cpp */; };
@@ -55,6 +56,8 @@
 		B3A7EFFE175AFF2A002DE3F0 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3A7EFF9175AFF2A002DE3F0 /* tinyxml2.cpp */; };
 		B3A7F009175B0408002DE3F0 /* lwEffects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3A7F007175B0408002DE3F0 /* lwEffects.cpp */; };
 		B3CF95C0178740C100E0B6B9 /* lwLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3CF95BF178740C100E0B6B9 /* lwLog.cpp */; };
+		B3D2604117943E9600C1D576 /* lwMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3D2603F17943E9600C1D576 /* lwMesh.cpp */; };
+		B3D260461794797200C1D576 /* lwModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3D260441794797200C1D576 /* lwModel.cpp */; };
 		B3F760951759E24B00DE9BBF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F760941759E24B00DE9BBF /* Foundation.framework */; };
 		B3F760EA1759E3B900DE9BBF /* lwApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3F760E81759E3B800DE9BBF /* lwApp.cpp */; };
 		B3FDD0E3176A369000B82210 /* lwTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3FDD0E1176A369000B82210 /* lwTask.cpp */; };
@@ -168,6 +171,8 @@
 		B34A6EA817700929002DBC4A /* lwTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwTexture.h; sourceTree = "<group>"; };
 		B34A6EC917701026002DBC4A /* lwColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwColor.cpp; sourceTree = "<group>"; };
 		B34A6ECA17701026002DBC4A /* lwColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwColor.h; sourceTree = "<group>"; };
+		B370842B178C825700C71C5D /* lwMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwMaterial.cpp; sourceTree = "<group>"; };
+		B370842C178C825700C71C5D /* lwMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwMaterial.h; sourceTree = "<group>"; };
 		B37724BC175A62A70059300F /* lwFileSys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwFileSys.h; sourceTree = "<group>"; };
 		B37724BD175A62A70059300F /* lwFileSys.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = lwFileSys.mm; sourceTree = "<group>"; };
 		B37724BF175A67EA0059300F /* lwLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwLog.h; sourceTree = "<group>"; };
@@ -185,6 +190,10 @@
 		B3A7F007175B0408002DE3F0 /* lwEffects.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwEffects.cpp; sourceTree = "<group>"; };
 		B3A7F008175B0408002DE3F0 /* lwEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwEffects.h; sourceTree = "<group>"; };
 		B3CF95BF178740C100E0B6B9 /* lwLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwLog.cpp; sourceTree = "<group>"; };
+		B3D2603F17943E9600C1D576 /* lwMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwMesh.cpp; sourceTree = "<group>"; };
+		B3D2604017943E9600C1D576 /* lwMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwMesh.h; sourceTree = "<group>"; };
+		B3D260441794797200C1D576 /* lwModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwModel.cpp; sourceTree = "<group>"; };
+		B3D260451794797200C1D576 /* lwModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwModel.h; sourceTree = "<group>"; };
 		B3F760911759E24B00DE9BBF /* liblwfk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblwfk.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3F760941759E24B00DE9BBF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B3F760E81759E3B800DE9BBF /* lwApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwApp.cpp; sourceTree = "<group>"; };
@@ -432,8 +441,14 @@
 				B37FC6581773419C00A22473 /* lwTouch.h */,
 				B3FDD0E1176A369000B82210 /* lwTask.cpp */,
 				B3FDD0E2176A369000B82210 /* lwTask.h */,
+				B3D260441794797200C1D576 /* lwModel.cpp */,
+				B3D260451794797200C1D576 /* lwModel.h */,
 				B3136E9517631495008E1EF9 /* lwCamera.h */,
 				B3136E9617631495008E1EF9 /* lwCamera.cpp */,
+				B3D2603F17943E9600C1D576 /* lwMesh.cpp */,
+				B3D2604017943E9600C1D576 /* lwMesh.h */,
+				B370842B178C825700C71C5D /* lwMaterial.cpp */,
+				B370842C178C825700C71C5D /* lwMaterial.h */,
 				B3A7F007175B0408002DE3F0 /* lwEffects.cpp */,
 				B3A7F008175B0408002DE3F0 /* lwEffects.h */,
 				B34A6E96176F779C002DBC4A /* lwRes.cpp */,
@@ -538,12 +553,14 @@
 				B306FAF01770A86800AA4963 /* PVRTFixedPoint.cpp in Sources */,
 				B306FAE41770A86800AA4963 /* PVRShellOS.cpp in Sources */,
 				B306FAE81770A86800AA4963 /* PVRTPFXParserAPI.cpp in Sources */,
+				B370842D178C825700C71C5D /* lwMaterial.cpp in Sources */,
 				B306FAF81770A86800AA4963 /* PVRTQuaternionF.cpp in Sources */,
 				B306FAF11770A86800AA4963 /* PVRTGeometry.cpp in Sources */,
 				B34A6EA6176F7CA2002DBC4A /* stb_image_aug.c in Sources */,
 				B306FAF41770A86800AA4963 /* PVRTMisc.cpp in Sources */,
 				B34A6EA4176F7CA2002DBC4A /* image_helper.c in Sources */,
 				B3A7EFFE175AFF2A002DE3F0 /* tinyxml2.cpp in Sources */,
+				B3D260461794797200C1D576 /* lwModel.cpp in Sources */,
 				B306FAEF1770A86800AA4963 /* PVRTError.cpp in Sources */,
 				B34A6E97176F779C002DBC4A /* lwRes.cpp in Sources */,
 				B306FAFB1770A86800AA4963 /* PVRTShadowVol.cpp in Sources */,
@@ -553,6 +570,7 @@
 				B306FAEB1770A86800AA4963 /* PVRTShader.cpp in Sources */,
 				B34A6ECB17701026002DBC4A /* lwColor.cpp in Sources */,
 				B306FAF51770A86800AA4963 /* PVRTModelPOD.cpp in Sources */,
+				B3D2604117943E9600C1D576 /* lwMesh.cpp in Sources */,
 				B3136E9717631495008E1EF9 /* lwCamera.cpp in Sources */,
 				B306FAFD1770A86800AA4963 /* PVRTStringHash.cpp in Sources */,
 				B306FAEC1770A86800AA4963 /* PVRTTextureAPI.cpp in Sources */,

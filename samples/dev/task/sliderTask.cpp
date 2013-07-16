@@ -61,21 +61,21 @@ void SliderTask::vDraw() {
 }
 
 void SliderTask::vTouchBegan(const lw::Touch &touch) {
-    lwinfo("vTouchBegan:" << touch.x << "," << touch.y);
+    lwinfo("vTouchBegan: %f, %f", touch.x, touch.y);
     stop();
     gSpriteTask.start();
 }
 
 void SliderTask::vTouchMoved(const lw::Touch &touch) {
-    lwinfo("vTouchMoved:" << touch.x << "," << touch.y);
+    lwinfo("vTouchMoved: %f, %f", touch.x, touch.y);
 }
 
 void SliderTask::vTouchEnded(const lw::Touch &touch)  {
-    lwinfo("vTouchEnded:" << touch.x << "," << touch.y);
+    lwinfo("vTouchEnded: %f, %f", touch.x, touch.y);
 }
 
 void SliderTask::vTouchCanceled(const lw::Touch &touch)  {
-    lwinfo("vTouchCanceled:" << touch.x << "," << touch.y);
+    lwinfo("vTouchCanceled: %f, %f", touch.x, touch.y);
 }
 
 

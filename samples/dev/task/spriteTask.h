@@ -2,7 +2,12 @@
 #define __LW_SPRITE_TASK_H__
 
 #include "lwfk/lwTask.h"
-#include "lwfk/lwSprite.h"
+
+namespace lw {
+    class Sprite;
+    class Model;
+    class Camera;
+}
 
 class SpriteTask: public lw::Task
 {
@@ -22,6 +27,9 @@ private:
     void vTouchCanceled(const lw::Touch &touch);
     
     lw::Sprite *_pSprite;
+    lw::Model *_pModel;
+    lw::Camera *_pCamera;
+    
 };
 
 extern SpriteTask gSpriteTask;

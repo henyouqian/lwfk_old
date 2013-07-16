@@ -51,8 +51,8 @@ namespace lw {
         _posLocation = _pEffects->getLocationFromSemantic(EffectsRes::POSITION);
         _uvLocation = _pEffects->getLocationFromSemantic(EffectsRes::UV0);
         _mvpMatLocation = _pEffects->getLocationFromSemantic(EffectsRes::WORLDVIEWPROJ);
-        _colorLocation = _pEffects->getUniformLocation("u_color");
-        _samplerLocation = _pEffects->getUniformLocation("u_texture");
+        _colorLocation = _pEffects->getUniformLocation("input_color");
+        _samplerLocation = _pEffects->getUniformLocation("input_texture");
     }
     
     SpriteVertexBuffer::~SpriteVertexBuffer(){
@@ -125,8 +125,8 @@ namespace lw {
         SpriteVertexBuffer* _pvb = NULL;
     }
     
-    //====================================================
     
+    //====================================================
 	Sprite* Sprite::createFromFile(const char *file){
         bool ok = false;
         Sprite* p = new Sprite(file, false, ok);
