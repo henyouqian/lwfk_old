@@ -8,6 +8,8 @@
 #include "lwfk/lwModel.h"
 #include "lwfk/lwCamera.h"
 
+#include <math.h>
+
 
 SpriteTask gSpriteTask;
 
@@ -45,6 +47,14 @@ void SpriteTask::vStop() {
 
 
 void SpriteTask::vUpdate() {
+    static float f = 0.0f;
+    f += 0.03f;
+    PVRTVECTOR3 eye = {sinf(f)*10.f, 10.f, cosf(f)*10.f};
+    PVRTVECTOR3 at = {0.f, 5.f, 0.f};
+    PVRTVECTOR3 up = {0.f, 1.f, 0.f};
+    _pCamera->lookat(eye, at, up);
+    
+    
 }
 
 
@@ -52,17 +62,25 @@ void SpriteTask::vDraw() {
     glClearColor(1.f, 0.f, 1.f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-//    static float t = 0;
-//    t += .1f;
-//    _pSprite->setPos(sin(t)*100.f + 100.f, 0);
-//    _pSprite->draw();
-//    
-//    _pSprite->setPos(640-256, 1136-256);
-//    _pSprite->draw();
+    static float t = 0;
+    t += .1f;
+    _pSprite->setAnchor(0, 0);
+    _pSprite->setPos(sin(t)*100.f + 100.f, 0);
+    _pSprite->setRotate(0);
+    _pSprite->setScale(1.f, 1.f);
+    _pSprite->draw();
+    
+    _pSprite->setAnchor(128, 128);
+    _pSprite->setPos(640-256, 1136-256);
+    _pSprite->setRotate(t);
+    float s = sinf(t*.3f)*.5+1.f;
+    _pSprite->setScale(s, s);
+    _pSprite->draw();
     
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
     
     _pModel->draw(*_pCamera);
 }

@@ -361,14 +361,19 @@ namespace lw {
     void Sprite::update(){
         _needUpdate = false;
         PVRTMat4 m, m1;
-		m = PVRTMat4::Translation(_posX, _posY, 0.f);
+        m = PVRTMat4::Identity();
+        
+        if (_posX or _posY) {
+            m1 = PVRTMat4::Translation(_posX, _posY, 0.f);
+            m = m * m1;
+        }
 		if ( _rotate != 0.f ){
 			m1 = PVRTMat4::RotationZ(_rotate);
-			m *= m1;
+			m = m * m1;
 		}
 		if ( _scaleX != 1.f || _scaleY != 1.f ){
             m1 = PVRTMat4::Scale(_scaleX, _scaleY, 1.f);
-			m *= m1;
+			m = m * m1;
 		}
         
         float posX1 = -_ancX;
@@ -379,26 +384,31 @@ namespace lw {
         PVRTVec3 pt[4];
 		pt[0].x = posX1;
         pt[0].y = posY1;
+        pt[0].z = _z;
         pt[1].x = posX1;
         pt[1].y = posY2;
+        pt[1].z = _z;
         pt[2].x = posX2;
         pt[2].y = posY1;
+        pt[2].z = _z;
 		pt[3].x = posX2;
         pt[3].y = posY2;
+        pt[3].z = _z;
         
-		PVRTTransformArray(pt, pt, 4, &m, f2vt(1.0));
+        PVRTVec3 ptt[4];
+		PVRTTransformArray(ptt, pt, 4, &m, f2vt(1.0));
         
-        _vertexPos[0].x = pt[0].x;
-		_vertexPos[0].y = -pt[0].y;
+        _vertexPos[0].x = ptt[0].x;
+		_vertexPos[0].y = -ptt[0].y;
         
-        _vertexPos[1].x = pt[1].x;
-		_vertexPos[1].y = -pt[1].y;
+        _vertexPos[1].x = ptt[1].x;
+		_vertexPos[1].y = -ptt[1].y;
         
-        _vertexPos[2].x = pt[2].x;
-		_vertexPos[2].y = -pt[2].y;
+        _vertexPos[2].x = ptt[2].x;
+		_vertexPos[2].y = -ptt[2].y;
         
-        _vertexPos[3].x = pt[3].x;
-		_vertexPos[3].y = -pt[3].y;
+        _vertexPos[3].x = ptt[3].x;
+		_vertexPos[3].y = -ptt[3].y;
     }
     
     GLuint Sprite::getGlId(){

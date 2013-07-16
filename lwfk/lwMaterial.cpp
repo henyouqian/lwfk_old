@@ -268,26 +268,25 @@ namespace lw {
             
             if (strcmp(name, "_position") == 0) {
                 pInput = new MaterialInputPosition(location);
+                _attribInputs.push_back(pInput);
             } else if (strcmp(name, "_normal") == 0) {
                 pInput = new MaterialInputNormal(location);
-                _inputs.push_back(pInput);
+                _attribInputs.push_back(pInput);
             } else if (strcmp(name, "_uv0") == 0) {
                 pInput = new MaterialInputUV(location, 0);
-                _inputs.push_back(pInput);
+                _attribInputs.push_back(pInput);
             } else if (strcmp(name, "_uv1") == 0) {
                 pInput = new MaterialInputUV(location, 1);
-                _inputs.push_back(pInput);
+                _attribInputs.push_back(pInput);
             } else if (strcmp(name, "_uv2") == 0) {
                 pInput = new MaterialInputUV(location, 2);
-                _inputs.push_back(pInput);
+                _attribInputs.push_back(pInput);
             } else if (strcmp(name, "_uv3") == 0) {
                 pInput = new MaterialInputUV(location, 3);
-            }
-            
-            if (pInput)
-                _inputs.push_back(pInput);
-            else
+                _attribInputs.push_back(pInput);
+            } else {
                 lwerror("unkown attribute: %s", name);
+            }
         }
         
         glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &total);
@@ -303,27 +302,30 @@ namespace lw {
             
             if (strcmp(name, "_mv") == 0) {
                 pInput = new MaterialInputMV(location);
-                _inputs.push_back(pInput);
+                _uniformInputs.push_back(pInput);
             } else if (strcmp(name, "_mvp") == 0) {
                 pInput = new MaterialInputMVP(location);
-                _inputs.push_back(pInput);
+                _uniformInputs.push_back(pInput);
             } else if (strcmp(name, "_mvit") == 0) {
                 pInput = new MaterialInputMVIT(location);
-                _inputs.push_back(pInput);
-            }
-            
-            if (pInput)
-                _inputs.push_back(pInput);
-            else if (name[0] == '_')
+                _uniformInputs.push_back(pInput);
+            } else if (name[0] == '_') {
                 lwerror("unkown auto uniform: %s", name);
+            }
         }
         
         ok = true;
     }
     
     Material::~Material() {
-        std::vector<MaterialInput*>::iterator it = _inputs.begin();
-        std::vector<MaterialInput*>::iterator itend = _inputs.end();
+        std::vector<MaterialInput*>::iterator it = _attribInputs.begin();
+        std::vector<MaterialInput*>::iterator itend = _attribInputs.end();
+        for (; it != itend; ++it) {
+            delete (*it);
+        }
+        
+        it = _uniformInputs.begin();
+        itend = _uniformInputs.end();
         for (; it != itend; ++it) {
             delete (*it);
         }
@@ -346,10 +348,10 @@ namespace lw {
             return;
         }
         
-        MaterialInputFloat *pInput = (MaterialInputFloat*)findInput(_inputs, location);
+        MaterialInputFloat *pInput = (MaterialInputFloat*)findInput(_uniformInputs, location);
         if ( pInput == NULL) {
             pInput = new MaterialInputFloat(location, value);
-            _inputs.push_back(pInput);
+            _uniformInputs.push_back(pInput);
         } else {
             pInput->set(value);
         }
@@ -362,10 +364,10 @@ namespace lw {
             return;
         }
         
-        MaterialInputVec2 *pInput = (MaterialInputVec2*)findInput(_inputs, location);
+        MaterialInputVec2 *pInput = (MaterialInputVec2*)findInput(_uniformInputs, location);
         if ( pInput == NULL) {
             pInput = new MaterialInputVec2(location, x, y);
-            _inputs.push_back(pInput);
+            _uniformInputs.push_back(pInput);
         } else {
             pInput->set(x, y);
         }
@@ -378,10 +380,10 @@ namespace lw {
             return;
         }
         
-        MaterialInputVec3 *pInput = (MaterialInputVec3*)findInput(_inputs, location);
+        MaterialInputVec3 *pInput = (MaterialInputVec3*)findInput(_uniformInputs, location);
         if ( pInput == NULL) {
             pInput = new MaterialInputVec3(location, x, y, z);
-            _inputs.push_back(pInput);
+            _uniformInputs.push_back(pInput);
         } else {
             pInput->set(x, y, z);
         }
@@ -394,10 +396,10 @@ namespace lw {
             return;
         }
         
-        MaterialInputVec4 *pInput = (MaterialInputVec4*)findInput(_inputs, location);
+        MaterialInputVec4 *pInput = (MaterialInputVec4*)findInput(_uniformInputs, location);
         if ( pInput == NULL) {
             pInput = new MaterialInputVec4(location, x, y, z, w);
-            _inputs.push_back(pInput);
+            _uniformInputs.push_back(pInput);
         } else {
             pInput->set(x, y, z, w);
         }
@@ -410,10 +412,10 @@ namespace lw {
             return;
         }
         
-        MaterialInputTexture *pInput = (MaterialInputTexture*)findInput(_inputs, location);
+        MaterialInputTexture *pInput = (MaterialInputTexture*)findInput(_uniformInputs, location);
         if ( pInput == NULL) {
             pInput = new MaterialInputTexture(location, textureFile, unit);
-            _inputs.push_back(pInput);
+            _uniformInputs.push_back(pInput);
         } else {
             pInput->set(textureFile, unit);
         }
@@ -421,15 +423,28 @@ namespace lw {
     
     void Material::draw(const lw::Mesh &mesh, const PVRTMat4 &matWorld, const lw::Camera &camera) {
         _pEffects->use();
-        std::vector<MaterialInput*>::iterator it = _inputs.begin();
-        std::vector<MaterialInput*>::iterator itend = _inputs.end();
+        std::vector<MaterialInput*>::iterator it = _attribInputs.begin();
+        std::vector<MaterialInput*>::iterator itend = _attribInputs.end();
+        for (; it != itend; ++it) {
+            (*it)->use(mesh, matWorld, camera);
+        }
+        
+        it = _uniformInputs.begin();
+        itend = _uniformInputs.end();
         for (; it != itend; ++it) {
             (*it)->use(mesh, matWorld, camera);
         }
         
         glDrawElements(GL_TRIANGLES, mesh.faceCount*3, GL_UNSIGNED_SHORT, 0);
         
-        it = _inputs.begin();
+        it = _attribInputs.begin();
+        itend = _attribInputs.end();
+        for (; it != itend; ++it) {
+            (*it)->unuse();
+        }
+        
+        it = _uniformInputs.begin();
+        itend = _uniformInputs.end();
         for (; it != itend; ++it) {
             (*it)->unuse();
         }

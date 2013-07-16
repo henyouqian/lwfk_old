@@ -27,7 +27,8 @@ namespace lw {
         Material(const char *effectsFile, bool &ok);
         
         EffectsRes *_pEffects;
-        std::vector<MaterialInput*> _inputs;
+        std::vector<MaterialInput*> _attribInputs;
+        std::vector<MaterialInput*> _uniformInputs;
     };
     
     
