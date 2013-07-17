@@ -24,9 +24,9 @@ SpriteTask::~SpriteTask() {
 
 
 void SpriteTask::vStart() {
-    _pSprite = lw::Sprite::createFromFile("img05.png");
-    _pSprite->setUV(0.f, 0.f, 256.f, 256.f);
-    _pSprite->setPos(0, 0);
+//    _pSprite = lw::Sprite::createFromFile("img05.png");
+//    _pSprite->setUV(0.f, 0.f, 256.f, 256.f);
+//    _pSprite->setPos(0, 0);
 
     _pModel = lw::Model::create("girl.lwmdl");
     _pCamera = new lw::Camera();
@@ -40,7 +40,7 @@ void SpriteTask::vStart() {
 
 
 void SpriteTask::vStop() {
-    delete _pSprite;
+//    delete _pSprite;
     delete _pModel;
     delete _pCamera;
 }
@@ -64,22 +64,23 @@ void SpriteTask::vDraw() {
     
     static float t = 0;
     t += .1f;
-    _pSprite->setAnchor(0, 0);
-    _pSprite->setPos(sin(t)*100.f + 100.f, 0);
-    _pSprite->setRotate(0);
-    _pSprite->setScale(1.f, 1.f);
-    _pSprite->draw();
-    
-    _pSprite->setAnchor(128, 128);
-    _pSprite->setPos(640-256, 1136-256);
-    _pSprite->setRotate(t);
-    float s = sinf(t*.3f)*.5+1.f;
-    _pSprite->setScale(s, s);
-    _pSprite->draw();
+//    _pSprite->setAnchor(0, 0);
+//    _pSprite->setPos(sin(t)*100.f + 100.f, 0);
+//    _pSprite->setRotate(0);
+//    _pSprite->setScale(1.f, 1.f);
+//    _pSprite->draw();
+//    
+//    _pSprite->setAnchor(128, 128);
+//    _pSprite->setPos(640-256, 1136-256);
+//    _pSprite->setRotate(t);
+//    float s = sinf(t*.3f)*.5+1.f;
+//    _pSprite->setScale(s, s);
+//    _pSprite->draw();
     
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
     
     _pModel->draw(*_pCamera);

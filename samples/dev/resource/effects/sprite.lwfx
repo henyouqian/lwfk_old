@@ -1,5 +1,5 @@
 <lwfx>
-    <vs>
+    <vs name="vs">
         attribute vec3 _position;
         attribute vec2 _uv0;
         uniform mat4 _mvp;
@@ -11,7 +11,7 @@
             v_uv0 = _uv0;
         }
     </vs>
-    <fs>
+    <fs name="fs">
         uniform lowp vec4 input_color;
         uniform sampler2D input_texture;
         varying highp vec2 v_uv0;
@@ -27,5 +27,11 @@
 
     <input name="input_texture" type="TEXTURE"/>
     <input name="input_color" type="VEC4"/>
+    
+    <fx name="normal">
+        <pass vs="vs" fs="fs">
+            
+        </pass>
+    </fx>
 
 </lwfx>

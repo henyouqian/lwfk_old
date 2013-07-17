@@ -11,7 +11,7 @@ namespace lw {
     
     class Material {
     public:
-        static Material* create(const char *effectsFile);
+        static Material* create(const char *fxFile, const char *fxName);
         ~Material();
         
         void setFloat(const char *inputName, float value);
@@ -24,9 +24,10 @@ namespace lw {
         
         
     private:
-        Material(const char *effectsFile, bool &ok);
+        Material(const char *effectsFile, const char* fxName, bool &ok);
         
         EffectsRes *_pEffects;
+        std::string _fxName;
         std::vector<MaterialInput*> _attribInputs;
         std::vector<MaterialInput*> _uniformInputs;
     };

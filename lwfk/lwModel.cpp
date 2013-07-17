@@ -156,10 +156,12 @@ namespace lw {
             _meshes.push_back(mesh);
             
             //material
-            const char *fxFile = pElemMesh->Attribute("effects");
-            assert(fxFile);
-            Material *pMaterial = Material::create(fxFile);
+            const char *fxFile = pElemMesh->Attribute("fxFile");
+            const char *fxName = pElemMesh->Attribute("fxName");
+            assert(fxFile && fxName);
+            Material *pMaterial = Material::create(fxFile, fxName);
             assert(pMaterial);
+            
             
             const tinyxml2::XMLElement *pElemInput = pElemMesh->FirstChildElement("input");
             while ( pElemInput ) {

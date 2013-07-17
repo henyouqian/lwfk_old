@@ -229,9 +229,9 @@ namespace lw {
     
     
     //======================================
-    Material* Material::create(const char *effectsFile) {
+    Material* Material::create(const char *fxFile, const char *fxName) {
         bool ok = false;
-        Material *pMaterial = new Material(effectsFile, ok);
+        Material *pMaterial = new Material(fxFile, fxName, ok);
         if (pMaterial && ok) {
             return pMaterial;
         } else {
@@ -241,18 +241,23 @@ namespace lw {
         }
     }
     
-    Material::Material(const char *effectsFile, bool &ok) {
-        assert(effectsFile);
+    Material::Material(const char *fxFile, const char* fxName, bool &ok) {
+        assert(fxFile && fxName);
         ok = false;
         
-        _pEffects = EffectsRes::create(effectsFile);
+        _pEffects = EffectsRes::create(fxFile);
         if (_pEffects == NULL) {
-            lwerror("EffectsRes::create failed: effectsFile=%s", effectsFile);
+            lwerror("EffectsRes::create failed: effectsFile=%s", fxFile);
             return;
         }
+        if (!_pEffects->checkFxName(fxName)) {
+            lwerror("invalid fxName: %s", fxName);
+            return;
+        }
+        _fxName = fxName;
         
         //enumerate attributes and uniforms
-        GLuint program = _pEffects->getProgram();
+        GLuint program = _pEffects->getProgram(_fxName.c_str(), 0);
         int total = -1;
         
         glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &total);
@@ -342,7 +347,7 @@ namespace lw {
     }
     
     void Material::setFloat(const char *inputName, float value) {
-        int location = _pEffects->getUniformLocation(inputName);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -358,7 +363,7 @@ namespace lw {
     }
     
     void Material::setVec2(const char *inputName, float x, float y) {
-        int location = _pEffects->getUniformLocation(inputName);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -374,7 +379,7 @@ namespace lw {
     }
     
     void Material::setVec3(const char *inputName, float x, float y, float z) {
-        int location = _pEffects->getUniformLocation(inputName);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -390,7 +395,7 @@ namespace lw {
     }
     
     void Material::setVec4(const char *inputName, float x, float y, float z, float w)  {
-        int location = _pEffects->getUniformLocation(inputName);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -406,23 +411,24 @@ namespace lw {
     }
     
     void Material::setTexture(const char *inputName, const char *textureFile, GLint unit) {
-        int location = _pEffects->getUniformLocation(inputName);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
         }
         
         MaterialInputTexture *pInput = (MaterialInputTexture*)findInput(_uniformInputs, location);
-        if ( pInput == NULL) {
-            pInput = new MaterialInputTexture(location, textureFile, unit);
-            _uniformInputs.push_back(pInput);
+        if ( !pInput ) {
+            MaterialInputTexture *p = new MaterialInputTexture(location, textureFile, unit);
+            _uniformInputs.push_back(p);
         } else {
             pInput->set(textureFile, unit);
         }
     }
     
     void Material::draw(const lw::Mesh &mesh, const PVRTMat4 &matWorld, const lw::Camera &camera) {
-        _pEffects->use();
+        _pEffects->use(_fxName.c_str());
+        
         std::vector<MaterialInput*>::iterator it = _attribInputs.begin();
         std::vector<MaterialInput*>::iterator itend = _attribInputs.end();
         for (; it != itend; ++it) {

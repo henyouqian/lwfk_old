@@ -1,5 +1,5 @@
 <lwfx>
-    <vs>
+    <vs name="vs_phong">
         attribute mediump vec3 _position;
         attribute mediump vec2 _uv0;
         attribute mediump vec3 _normal;
@@ -21,7 +21,7 @@
             v_eyeSpaceVexPos = vec3(_mv * vec4(_position, 1.0));
         }
     </vs>
-    <fs>
+    <fs name="fs_phong">
         varying highp vec2 v_texCoord;
         varying mediump vec3 v_normal;
         varying mediump vec3 v_eyeSpaceVexPos;
@@ -52,4 +52,13 @@
             gl_FragColor = texture2D(u_texture, v_texCoord)*(u_ambient+diffuse*u_diffuse)+specular*u_specular;
         }
     </fs>
+    
+    <fx name="phong">
+        <pass vs="vs_phong" fs="fs_phong">
+            <glEnable value="GL_CULL_FACE"/>
+            <glEnable value="GL_DEPTH_TEST"/>
+            <glDepthMask value="GL_TRUE"/>
+            <glDisable value="GL_BLEND"/>
+        </pass>
+    </fx>
 </lwfx>

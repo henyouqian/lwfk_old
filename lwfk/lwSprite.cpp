@@ -51,8 +51,8 @@ namespace lw {
         _posLocation = _pEffects->getLocationFromSemantic(EffectsRes::POSITION);
         _uvLocation = _pEffects->getLocationFromSemantic(EffectsRes::UV0);
         _mvpMatLocation = _pEffects->getLocationFromSemantic(EffectsRes::WORLDVIEWPROJ);
-        _colorLocation = _pEffects->getUniformLocation("input_color");
-        _samplerLocation = _pEffects->getUniformLocation("input_texture");
+        _colorLocation = _pEffects->getUniformLocation("input_color", "normal", 0);
+        _samplerLocation = _pEffects->getUniformLocation("input_texture", "normal", 0);
     }
     
     SpriteVertexBuffer::~SpriteVertexBuffer(){
@@ -83,7 +83,7 @@ namespace lw {
         if ( _vertices.empty() ){
             return;
         }
-        _pEffects->use();
+        _pEffects->use("normal");
         PVRTMat4 m;
         _camera.getViewProj(m);
         glUniformMatrix4fv(_mvpMatLocation, 1, false, m.f);
@@ -96,7 +96,8 @@ namespace lw {
 		//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
         glUniform1i(_samplerLocation, 0);
         glEnable(GL_CULL_FACE);
-		glDepthMask(GL_FALSE);
+        glDisable(GL_DEPTH_TEST);
+//		glDepthMask(GL_FALSE);
         if ( _currBlendMode == BLEND_NONE ){
 			glDisable(GL_BLEND);
 		}else{

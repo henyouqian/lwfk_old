@@ -51,9 +51,114 @@ namespace lw
             
             return true;
         }
+        
+        struct NameShader {
+            std::string name;
+            GLuint shader;
+        };
+        
     } //namespace
     
+    //==========================================
+    class EffectPass {
+    public:
+        EffectPass(const tinyxml2::XMLElement *pElemPass, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders);
+        ~EffectPass();
+        
+    public:
+        GLuint program;
+    };
     
+    EffectPass::EffectPass(const tinyxml2::XMLElement *pElemPass, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders) {
+        program = 0;
+        
+        const char *vs = pElemPass->Attribute("vs");
+        const char *fs = pElemPass->Attribute("fs");
+        assert(vs && fs);
+        
+        NameShader *pVtxNameShader = NULL;
+        NameShader *pFragNameShader = NULL;
+        std::vector<NameShader>::iterator it = vtxShaders.begin();
+        std::vector<NameShader>::iterator itend = vtxShaders.end();
+        for (; it != itend; ++it) {
+            if (it->name.compare(vs) == 0) {
+                pVtxNameShader = &(*it);
+                break;
+            }
+        }
+        
+        it = fragShaders.begin();
+        itend = fragShaders.end();
+        for (; it != itend; ++it) {
+            if (it->name.compare(fs) == 0) {
+                pFragNameShader = &(*it);
+                break;
+            }
+        }
+        
+        assert(pVtxNameShader && pFragNameShader);
+        
+        program = glCreateProgram();
+        glAttachShader(program, pVtxNameShader->shader);
+        glAttachShader(program, pFragNameShader->shader);
+        
+        if (!linkProgram(program)) {
+            lwerror("Failed to link program: %u", program);
+            assert(0);
+            return;
+        }
+        
+        glDetachShader(program, pVtxNameShader->shader);
+        glDetachShader(program, pFragNameShader->shader);
+    }
+    
+    EffectPass::~EffectPass() {
+        if (program)
+            glDeleteProgram(program);
+    }
+    
+    //==========================================
+    class EffectFx {
+    public:
+        EffectFx(const tinyxml2::XMLElement *pElemFx, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders);
+        ~EffectFx();
+        
+    public:
+        std::string name;
+        std::vector<EffectPass*> passes;
+        bool ok;
+    };
+    
+    EffectFx::EffectFx(const tinyxml2::XMLElement *pElemFx, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders) {
+        ok = false;
+        name = pElemFx->Attribute("name");
+        
+        const tinyxml2::XMLElement *pElemPass = pElemFx->FirstChildElement("pass");
+        while (pElemPass) {
+            EffectPass *pPass = new EffectPass(pElemPass, vtxShaders, fragShaders);
+            if (pPass->program)
+                passes.push_back(pPass);
+            else {
+                delete pPass;
+                lwerror("create pass failed: %s", name.c_str());
+                return;
+            }
+            pElemPass = pElemPass->NextSiblingElement("pass");
+        }
+        ok = true;
+    }
+    
+    EffectFx::~EffectFx() {
+        std::vector<EffectPass*>::iterator it = passes.begin();
+        std::vector<EffectPass*>::iterator itend = passes.end();
+        for (; it != itend; ++it) {
+            delete (*it);
+        }
+    }
+    
+    
+    
+    //==========================================
     EffectsRes* EffectsRes::create(const char *file)
     {
         assert(file);
@@ -74,132 +179,102 @@ namespace lw
     EffectsRes::EffectsRes(const char *file, bool &ok)
         :Res(file, _resMgr)
     {
+        ok = false;
         assert(file);
+        
+        std::vector<NameShader> _vtxShaders;
+        std::vector<NameShader> _fragShaders;
+        
         tinyxml2::XMLDocument doc;
         CPVRTResourceFile resFile(file);
         tinyxml2::XMLError err = doc.Parse((const char*)resFile.DataPtr(), resFile.Size());
-    //    tinyxml2::XMLError err = doc.LoadFile(_f(file));
         assert(err == tinyxml2::XML_SUCCESS);
+        
+        //create vertex shaders
         const tinyxml2::XMLElement *pElemLwfx = doc.RootElement();
         const tinyxml2::XMLElement *pElemVS = pElemLwfx->FirstChildElement("vs");
-        assert(pElemVS);
-        const char *vsSource = pElemVS->GetText();
+        while (pElemVS) {
+            const char *vsSource = pElemVS->GetText();
+            const char *vsName = pElemVS->Attribute("name");
+            assert(vsSource && vsName);
+            GLuint vtxShader;
+            if (!compileShader(vtxShader, GL_VERTEX_SHADER, vsSource)) {
+                return;
+            }
+            NameShader ns = {vsName, vtxShader};
+            _vtxShaders.push_back(ns);
+            
+            pElemVS = pElemVS->NextSiblingElement("vs");
+        }
         
+        //create fragment shaders
         const tinyxml2::XMLElement *pElemFS = pElemLwfx->FirstChildElement("fs");
-        assert(pElemFS);
-        const char *fsSource = pElemFS->GetText();
-        
-        GLuint vertShader, fragShader;
-        if (!compileShader(vertShader, GL_VERTEX_SHADER, vsSource)) {
-            ok = false;
-            return;
-        }
-        if (!compileShader(fragShader, GL_FRAGMENT_SHADER, fsSource)) {
-            ok = false;
-            return;
-        }
-        
-        _program = glCreateProgram();
-        glAttachShader(_program, vertShader);
-        glAttachShader(_program, fragShader);
-        
-        if (!linkProgram(_program)) {
-            lwerror("Failed to link program: %u", _program);
+        while (pElemFS) {
+            const char *fsSource = pElemFS->GetText();
+            const char *fsName = pElemFS->Attribute("name");
+            assert(fsSource && fsName);
+            GLuint fragShader;
+            if (!compileShader(fragShader, GL_FRAGMENT_SHADER, fsSource)) {
+                return;
+            }
+            NameShader ns = {fsName, fragShader};
+            _fragShaders.push_back(ns);
             
-            if (vertShader) {
-                glDeleteShader(vertShader);
-                vertShader = 0;
+            pElemFS = pElemFS->NextSiblingElement("vs");
+        }
+        
+        //create programs
+        const tinyxml2::XMLElement *pElemFx = pElemLwfx->FirstChildElement("fx");
+        while (pElemFx) {
+            EffectFx *pfx = new EffectFx(pElemFx, _vtxShaders, _fragShaders);
+            if (!pfx->ok) {
+                delete pfx;
+                lwerror("create EffectFx failed");
+                break;
             }
-            if (fragShader) {
-                glDeleteShader(fragShader);
-                fragShader = 0;
-            }
+            _fxs.push_back(pfx);
             
-            ok = false;
-            return;
+            pElemFx = pElemFx->NextSiblingElement("fx");
         }
         
-        if (vertShader) {
-            glDetachShader(_program, vertShader);
-            glDeleteShader(vertShader);
-        }
-        if (fragShader) {
-            glDetachShader(_program, fragShader);
-            glDeleteShader(fragShader);
+        //delete shaders
+        std::vector<NameShader>::iterator it = _vtxShaders.begin();
+        std::vector<NameShader>::iterator itend = _vtxShaders.end();
+        for (;it != itend; ++it) {
+            glDeleteShader(it->shader);
         }
         
-        const tinyxml2::XMLElement *pElemAttr = pElemLwfx->FirstChildElement("attribute");
-        while (pElemAttr) {
-            LocSmt locSmt;
-            const char *name = pElemAttr->Attribute("name");
-            const char *semantic = pElemAttr->Attribute("semantic");
-            locSmt.location = glGetAttribLocation(_program, name);
-            if (locSmt.location == -1) {
-                lwerror("glGetAttribLocation failed");
-            } else {
-                if (strcmp(semantic, "POSITION") == 0) {
-                    locSmt.semantic = POSITION;
-                } else if (strcmp(semantic, "NORMAL") == 0) {
-                    locSmt.semantic = NORMAL;
-                } else if (strcmp(semantic, "BINORMAL") == 0) {
-                    locSmt.semantic = BINORMAL;
-                } else if (strcmp(semantic, "TANGENT") == 0) {
-                    locSmt.semantic = TANGENT;
-                } else if (strcmp(semantic, "UV0") == 0) {
-                    locSmt.semantic = UV0;
-                } else if (strcmp(semantic, "UV1") == 0) {
-                    locSmt.semantic = UV1;
-                } else if (strcmp(semantic, "UV2") == 0) {
-                    locSmt.semantic = UV2;
-                } else if (strcmp(semantic, "UV3") == 0) {
-                    locSmt.semantic = UV3;
-                } else{
-                    locSmt.semantic = UNKNOWN;
-                }
-                if (locSmt.semantic != UNKNOWN) {
-                    _locSmts.push_back(locSmt);
-                }
-            }
-            pElemAttr = pElemAttr->NextSiblingElement("attribute");
+        it = _fragShaders.begin();
+        itend = _fragShaders.end();
+        for (;it != itend; ++it) {
+            glDeleteShader(it->shader);
         }
         
-        const tinyxml2::XMLElement *pElemUniform = pElemLwfx->FirstChildElement("uniform");
-        while (pElemUniform) {
-            LocSmt locSmt;
-            const char *name = pElemUniform->Attribute("name");
-            const char *semantic = pElemUniform->Attribute("semantic");
-            locSmt.location = glGetUniformLocation(_program, name);
-            if (locSmt.location == -1) {
-                lwerror("glGetUniformLocation failed");
-            } else {
-                if (strcmp(semantic, "WORLDVIEW") == 0) {
-                    locSmt.semantic = WORLDVIEW;
-                } else if (strcmp(semantic, "WORLDVIEWPROJ") == 0) {
-                    locSmt.semantic = WORLDVIEWPROJ;
-                } else if (strcmp(semantic, "WORLDVIEWIT") == 0) {
-                    locSmt.semantic = WORLDVIEWIT;
-                } else {
-                    locSmt.semantic = UNKNOWN;
-                }
-                if (locSmt.semantic != UNKNOWN) {
-                    _locSmts.push_back(locSmt);
-                }
-            }
-            pElemUniform = pElemUniform->NextSiblingElement("uniform");
-        }
-        
+                
         ok = true;
     }
 
     EffectsRes::~EffectsRes()
     {
-        if (_program) {
-            glDeleteProgram(_program);
+        std::vector<EffectFx*>::iterator it = _fxs.begin();
+        std::vector<EffectFx*>::iterator itend = _fxs.end();
+        for (; it != itend; ++it) {
+            delete (*it);
         }
     }
     
-    GLuint EffectsRes::getProgram() {
-        return _program;
+    GLuint EffectsRes::getProgram(const char *fxName, int pass) {
+        assert(fxName && pass >= 0);
+        
+        std::vector<EffectFx*>::iterator it = _fxs.begin();
+        std::vector<EffectFx*>::iterator itend = _fxs.end();
+        for (;it != itend; ++it) {
+            if ((*it)->name.compare(fxName) == 0) {
+                if (pass < (*it)->passes.size())
+                    return ((*it)->passes)[pass]->program;
+            }
+        }
+        return 0;
     }
 
     int EffectsRes::getLocationFromSemantic(Semantic semantic)
@@ -215,19 +290,55 @@ namespace lw
         return -1;
     }
 
-    int EffectsRes::getUniformLocation(const char* name)
+    int EffectsRes::getUniformLocation(const char* uniform, const char *fxName, int pass)
     {
-        return glGetUniformLocation(_program, name);
+        GLuint program = getProgram(fxName, pass);
+        return glGetUniformLocation(program, uniform);
     }
 
     const std::vector<EffectsRes::LocSmt>& EffectsRes::getLocSmts()
     {
         return _locSmts;
     }
+    
+    int EffectsRes::getPassCount(const char *fxName) {
+        assert(fxName);
+        std::vector<EffectFx*>::iterator it = _fxs.begin();
+        std::vector<EffectFx*>::iterator itend = _fxs.end();
+        for (;it != itend; ++it) {
+            if ((*it)->name.compare(fxName) == 0)
+                return (*it)->passes.size();
+        }
+        return 0;
+    }
 
-    void EffectsRes::use()
+    void EffectsRes::use(const char* fxName, int pass)
     {
-        glUseProgram(_program);
+        assert(fxName && pass >= 0);
+        
+        std::vector<EffectFx*>::iterator it = _fxs.begin();
+        std::vector<EffectFx*>::iterator itend = _fxs.end();
+        for (;it != itend; ++it) {
+            if ((*it)->name.compare(fxName) == 0) {
+                if (pass < (*it)->passes.size()) {
+                    glUseProgram(((*it)->passes)[pass]->program);
+                }
+                break;
+            }
+        }
+    }
+    
+    bool EffectsRes::checkFxName(const char *fxName) {
+        assert(fxName);
+        
+        std::vector<EffectFx*>::iterator it = _fxs.begin();
+        std::vector<EffectFx*>::iterator itend = _fxs.end();
+        for (;it != itend; ++it) {
+            if ((*it)->name.compare(fxName) == 0) {
+                return true;
+            }
+        }
+        return false;
     }
     
 } //namespace lw
