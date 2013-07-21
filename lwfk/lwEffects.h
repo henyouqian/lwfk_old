@@ -11,21 +11,6 @@ namespace lw
     class EffectsRes : public Res
     {
     public:
-        enum Semantic
-        {
-            UNKNOWN,
-            POSITION,
-            NORMAL,
-            BINORMAL,
-            TANGENT,
-            UV0,
-            UV1,
-            UV2,
-            UV3,
-            WORLDVIEW,
-            WORLDVIEWPROJ,
-            WORLDVIEWIT,
-        };
         
         /*
          _position,
@@ -38,33 +23,24 @@ namespace lw
          _uv3,
          _mv,
          _mvp,
-         _mvi,
+         _mvit,
          
          */
         
-        struct LocSmt
-        {
-            int location;
-            Semantic semantic;
-        };
         
         static EffectsRes* create(const char *file);
-        GLuint getProgram(const char *fxName, int pass);
-        int getLocationFromSemantic(EffectsRes::Semantic semantic);
-        int getUniformLocation(const char* uniform, const char *fxName, int pass);
+        GLuint getProgram(const char *fxName);
+        int getUniformLocation(const char* uniform, const char *fxName);
         
-        int getPassCount(const char *fxName);
-        void use(const char *fxName, int pass = 0);
+        void use(const char *fxName);
         bool checkFxName(const char *fxName);
-        
-        const std::vector<EffectsRes::LocSmt>& getLocSmts();
         
     private:
         EffectsRes(const char *file, bool &ok);
         ~EffectsRes();
         
-        std::vector<LocSmt> _locSmts;
         std::vector<EffectFx*> _fxs;
+        std::string _fileName;
     };
     
     

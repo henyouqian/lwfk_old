@@ -5,16 +5,13 @@
 #include "lwLog.h"
 #include "PVRTResourceFile.h"
 
-namespace lw
-{
+namespace lw {
 
-    namespace
-    {
+    namespace {
         
-        ResMgr _resMgr;
+        KeyResMgr _resMgr;
 
-        bool compileShader(GLuint &shader, GLenum type, const GLchar *source)
-        {
+        bool compileShader(GLuint &shader, GLenum type, const GLchar *source) {
             shader = glCreateShader(type);
             glShaderSource(shader, 1, &source, NULL);
             glCompileShader(shader);
@@ -60,20 +57,23 @@ namespace lw
     } //namespace
     
     //==========================================
-    class EffectPass {
+    class EffectFx {
     public:
-        EffectPass(const tinyxml2::XMLElement *pElemPass, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders);
-        ~EffectPass();
+        EffectFx(const tinyxml2::XMLElement *pElemFx, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders);
+        ~EffectFx();
         
     public:
+        std::string name;
         GLuint program;
+        bool ok;
     };
     
-    EffectPass::EffectPass(const tinyxml2::XMLElement *pElemPass, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders) {
-        program = 0;
+    EffectFx::EffectFx(const tinyxml2::XMLElement *pElemFx, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders) {
+        ok = false;
+        name = pElemFx->Attribute("name");
         
-        const char *vs = pElemPass->Attribute("vs");
-        const char *fs = pElemPass->Attribute("fs");
+        const char *vs = pElemFx->Attribute("vs");
+        const char *fs = pElemFx->Attribute("fs");
         assert(vs && fs);
         
         NameShader *pVtxNameShader = NULL;
@@ -110,59 +110,21 @@ namespace lw
         
         glDetachShader(program, pVtxNameShader->shader);
         glDetachShader(program, pFragNameShader->shader);
-    }
-    
-    EffectPass::~EffectPass() {
-        if (program)
-            glDeleteProgram(program);
-    }
-    
-    //==========================================
-    class EffectFx {
-    public:
-        EffectFx(const tinyxml2::XMLElement *pElemFx, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders);
-        ~EffectFx();
         
-    public:
-        std::string name;
-        std::vector<EffectPass*> passes;
-        bool ok;
-    };
-    
-    EffectFx::EffectFx(const tinyxml2::XMLElement *pElemFx, std::vector<NameShader>& vtxShaders, std::vector<NameShader>& fragShaders) {
-        ok = false;
-        name = pElemFx->Attribute("name");
-        
-        const tinyxml2::XMLElement *pElemPass = pElemFx->FirstChildElement("pass");
-        while (pElemPass) {
-            EffectPass *pPass = new EffectPass(pElemPass, vtxShaders, fragShaders);
-            if (pPass->program)
-                passes.push_back(pPass);
-            else {
-                delete pPass;
-                lwerror("create pass failed: %s", name.c_str());
-                return;
-            }
-            pElemPass = pElemPass->NextSiblingElement("pass");
-        }
         ok = true;
     }
     
     EffectFx::~EffectFx() {
-        std::vector<EffectPass*>::iterator it = passes.begin();
-        std::vector<EffectPass*>::iterator itend = passes.end();
-        for (; it != itend; ++it) {
-            delete (*it);
-        }
+        if (program)
+            glDeleteProgram(program);
     }
     
     
     
     //==========================================
-    EffectsRes* EffectsRes::create(const char *file)
-    {
+    EffectsRes* EffectsRes::create(const char *file) {
         assert(file);
-        EffectsRes *pRes = (EffectsRes*)_resMgr.getRes(file);
+        EffectsRes *pRes = (EffectsRes*)_resMgr.get(file);
         if (pRes)
             return pRes;
         
@@ -173,14 +135,14 @@ namespace lw
             delete pRes;
             return NULL;
         }
+        _resMgr.add(file, pRes);
         return pRes;
     }
 
-    EffectsRes::EffectsRes(const char *file, bool &ok)
-        :Res(file, _resMgr)
-    {
-        ok = false;
+    EffectsRes::EffectsRes(const char *file, bool &ok) {
         assert(file);
+        ok = false;
+        _fileName = file;
         
         std::vector<NameShader> _vtxShaders;
         std::vector<NameShader> _fragShaders;
@@ -254,78 +216,38 @@ namespace lw
         ok = true;
     }
 
-    EffectsRes::~EffectsRes()
-    {
+    EffectsRes::~EffectsRes() {
         std::vector<EffectFx*>::iterator it = _fxs.begin();
         std::vector<EffectFx*>::iterator itend = _fxs.end();
         for (; it != itend; ++it) {
             delete (*it);
         }
+        _resMgr.del(_fileName.c_str());
     }
     
-    GLuint EffectsRes::getProgram(const char *fxName, int pass) {
-        assert(fxName && pass >= 0);
+    GLuint EffectsRes::getProgram(const char *fxName) {
+        assert(fxName);
         
         std::vector<EffectFx*>::iterator it = _fxs.begin();
         std::vector<EffectFx*>::iterator itend = _fxs.end();
         for (;it != itend; ++it) {
             if ((*it)->name.compare(fxName) == 0) {
-                if (pass < (*it)->passes.size())
-                    return ((*it)->passes)[pass]->program;
+                return (*it)->program;
             }
         }
+        
         return 0;
     }
 
-    int EffectsRes::getLocationFromSemantic(Semantic semantic)
-    {
-        std::vector<LocSmt>::iterator it = _locSmts.begin();
-        std::vector<LocSmt>::iterator itend = _locSmts.end();
-        for (; it != itend; ++it) {
-            if (it->semantic == semantic) {
-                return it->location;
-            }
-        }
-        lwerror("sementic not found: %d", semantic);
-        return -1;
-    }
-
-    int EffectsRes::getUniformLocation(const char* uniform, const char *fxName, int pass)
-    {
-        GLuint program = getProgram(fxName, pass);
+    int EffectsRes::getUniformLocation(const char* uniform, const char *fxName) {
+        GLuint program = getProgram(fxName);
         return glGetUniformLocation(program, uniform);
     }
 
-    const std::vector<EffectsRes::LocSmt>& EffectsRes::getLocSmts()
-    {
-        return _locSmts;
-    }
-    
-    int EffectsRes::getPassCount(const char *fxName) {
+    void EffectsRes::use(const char* fxName) {
         assert(fxName);
-        std::vector<EffectFx*>::iterator it = _fxs.begin();
-        std::vector<EffectFx*>::iterator itend = _fxs.end();
-        for (;it != itend; ++it) {
-            if ((*it)->name.compare(fxName) == 0)
-                return (*it)->passes.size();
-        }
-        return 0;
-    }
-
-    void EffectsRes::use(const char* fxName, int pass)
-    {
-        assert(fxName && pass >= 0);
-        
-        std::vector<EffectFx*>::iterator it = _fxs.begin();
-        std::vector<EffectFx*>::iterator itend = _fxs.end();
-        for (;it != itend; ++it) {
-            if ((*it)->name.compare(fxName) == 0) {
-                if (pass < (*it)->passes.size()) {
-                    glUseProgram(((*it)->passes)[pass]->program);
-                }
-                break;
-            }
-        }
+        GLuint program = getProgram(fxName);
+        glUseProgram(program);
     }
     
     bool EffectsRes::checkFxName(const char *fxName) {

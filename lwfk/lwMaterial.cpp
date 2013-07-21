@@ -185,6 +185,25 @@ namespace lw {
     };
     
     //--------------------------------------
+    class MaterialInputVtxColor : public MaterialInput {
+    public:
+        MaterialInputVtxColor(GLint location) //index: 0->3
+        :MaterialInput(location) {}
+        
+        virtual void use(const lw::Mesh &mesh, const PVRTMat4 &matWorld, const lw::Camera &camera) {
+            const VertexInfo &vi = mesh.color;
+            if (vi.stride) {
+                glEnableVertexAttribArray(_location);
+                glVertexAttribPointer(_location, 4, GL_FLOAT, GL_FALSE, vi.stride, vi.ptr);
+            }
+        }
+        
+        virtual void unuse(){
+            glDisableVertexAttribArray(_location);
+        }
+    };
+    
+    //--------------------------------------
     class MaterialInputMV : public MaterialInput {
     public:
         MaterialInputMV(GLint location)
@@ -257,7 +276,7 @@ namespace lw {
         _fxName = fxName;
         
         //enumerate attributes and uniforms
-        GLuint program = _pEffects->getProgram(_fxName.c_str(), 0);
+        GLuint program = _pEffects->getProgram(_fxName.c_str());
         int total = -1;
         
         glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &total);
@@ -288,6 +307,9 @@ namespace lw {
                 _attribInputs.push_back(pInput);
             } else if (strcmp(name, "_uv3") == 0) {
                 pInput = new MaterialInputUV(location, 3);
+                _attribInputs.push_back(pInput);
+            } else if (strcmp(name, "_color") == 0) {
+                pInput = new MaterialInputVtxColor(location);
                 _attribInputs.push_back(pInput);
             } else {
                 lwerror("unkown attribute: %s", name);
@@ -347,7 +369,7 @@ namespace lw {
     }
     
     void Material::setFloat(const char *inputName, float value) {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -363,7 +385,7 @@ namespace lw {
     }
     
     void Material::setVec2(const char *inputName, float x, float y) {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -379,7 +401,7 @@ namespace lw {
     }
     
     void Material::setVec3(const char *inputName, float x, float y, float z) {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -395,7 +417,7 @@ namespace lw {
     }
     
     void Material::setVec4(const char *inputName, float x, float y, float z, float w)  {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -411,7 +433,7 @@ namespace lw {
     }
     
     void Material::setTexture(const char *inputName, const char *textureFile, GLint unit) {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str(), 0);
+        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -426,7 +448,7 @@ namespace lw {
         }
     }
     
-    void Material::draw(const lw::Mesh &mesh, const PVRTMat4 &matWorld, const lw::Camera &camera) {
+    void Material::draw(const lw::Mesh &mesh, const PVRTMat4 &matWorld, const lw::Camera &camera, bool useIndex) {
         _pEffects->use(_fxName.c_str());
         
         std::vector<MaterialInput*>::iterator it = _attribInputs.begin();
@@ -441,7 +463,11 @@ namespace lw {
             (*it)->use(mesh, matWorld, camera);
         }
         
-        glDrawElements(GL_TRIANGLES, mesh.faceCount*3, GL_UNSIGNED_SHORT, 0);
+        if (useIndex) {
+            glDrawElements(GL_TRIANGLES, mesh.verticesCount, GL_UNSIGNED_SHORT, 0);
+        } else {
+            glDrawArrays(GL_TRIANGLES, 0, mesh.verticesCount);
+        }
         
         it = _attribInputs.begin();
         itend = _attribInputs.end();

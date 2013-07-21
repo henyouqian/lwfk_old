@@ -18,13 +18,15 @@ LOCAL_SRC_FILES := \
 					lwfk/lwCamera.cpp \
 					lwfk/lwColor.cpp \
 					lwfk/lwEffects.cpp \
-					lwfk/lwFileSys.cpp \
+					lwfk/lwlog.cpp \
+					lwfk/lwMaterial.cpp \
+					lwfk/lwMesh.cpp \
+					lwfk/lwModel.cpp \
 					lwfk/lwRes.cpp \
 					lwfk/lwSprite.cpp \
 					lwfk/lwTask.cpp \
 					lwfk/lwTexture.cpp \
 					lwfk/lwTouch.cpp \
-					lwfk/lwlog.cpp \
 					libraries/soil/SOIL.c \
 				   	libraries/soil/image_DXT.c \
 				   	libraries/soil/image_helper.c \

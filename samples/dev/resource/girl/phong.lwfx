@@ -53,12 +53,10 @@
         }
     </fs>
     
-    <fx name="phong">
-        <pass vs="vs_phong" fs="fs_phong">
-            <glEnable value="GL_CULL_FACE"/>
-            <glEnable value="GL_DEPTH_TEST"/>
-            <glDepthMask value="GL_TRUE"/>
-            <glDisable value="GL_BLEND"/>
-        </pass>
+    <fx name="phong" vs="vs_phong" fs="fs_phong">
+        <glEnable value="GL_CULL_FACE"/>
+        <glEnable value="GL_DEPTH_TEST"/>
+        <glDepthMask value="GL_TRUE"/>
+        <glDisable value="GL_BLEND"/>
     </fx>
 </lwfx>

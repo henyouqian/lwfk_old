@@ -20,11 +20,12 @@ namespace lw {
     };
     
     struct Mesh {
-        Mesh():faceCount(0) {}
+        Mesh():verticesCount(0) {}
         VertexInfo position;
         VertexInfo normal;
+        VertexInfo color;
         VertexInfo uv[UV_SIZE];
-        GLsizei faceCount;
+        GLsizei verticesCount;
     };
     
     

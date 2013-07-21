@@ -2,8 +2,10 @@
 #include "lwSprite.h"
 #include "lwTexture.h"
 #include "lwEffects.h"
+#include "lwMaterial.h"
+#include "lwMesh.h"
 #include "lwApp.h"
-#include "lwFileSys.h"
+#include "lwLog.h"
 #include "tinyxml2/tinyxml2.h"
 #include "lwfk/lwCamera.h"
 
@@ -16,15 +18,17 @@ namespace lw {
             int u, v, w, h;
         };
         std::map<std::string, AtlasInfo> _atlasMap;
+        KeyResMgr _resMgr;
     }
     
     Camera _camera;
     
-    class SpriteVertexBuffer{
+    class SpriteVertexBuffer: public Mesh{
     public:
         SpriteVertexBuffer();
         ~SpriteVertexBuffer();
         void collectVetices(SpriteVertex *vertices, int numVertices, Color &color, BlendMode blendMode, GLuint textureId);
+        void collectVetices(SpriteVertex *vertices, int numVertices, Material *pMaterial);
         void flush();
         
         enum{
@@ -38,6 +42,7 @@ namespace lw {
         BlendMode _currBlendMode;
         GLuint _currTextureId;
         EffectsRes *_pEffects;
+        Material *_pMaterial;
         int _posLocation;
         int _uvLocation;
         int _mvpMatLocation;
@@ -48,11 +53,7 @@ namespace lw {
     SpriteVertexBuffer::SpriteVertexBuffer(){
         _vertices.reserve(VERTICIS_NUM_RESERVE);
         _pEffects = EffectsRes::create("sprite.lwfx");
-        _posLocation = _pEffects->getLocationFromSemantic(EffectsRes::POSITION);
-        _uvLocation = _pEffects->getLocationFromSemantic(EffectsRes::UV0);
-        _mvpMatLocation = _pEffects->getLocationFromSemantic(EffectsRes::WORLDVIEWPROJ);
-        _colorLocation = _pEffects->getUniformLocation("input_color", "normal", 0);
-        _samplerLocation = _pEffects->getUniformLocation("input_texture", "normal", 0);
+        _pMaterial = NULL;
     }
     
     SpriteVertexBuffer::~SpriteVertexBuffer(){
@@ -79,45 +80,30 @@ namespace lw {
         }
     }
     
+    void SpriteVertexBuffer::collectVetices(SpriteVertex *vertices, int numVertices, Material *pMaterial) {
+        if (pMaterial != _pMaterial || _vertices.size() >= VERTICIS_NUM_LIMIT) {
+            flush();
+        }
+        _pMaterial = pMaterial;
+        
+        for ( int i = 0; i < numVertices; ++i ) {
+            _vertices.push_back(vertices[i]);
+        }
+    }
+    
     void SpriteVertexBuffer::flush(){
         if ( _vertices.empty() ){
             return;
         }
-        _pEffects->use("normal");
-        PVRTMat4 m;
-        _camera.getViewProj(m);
-        glUniformMatrix4fv(_mvpMatLocation, 1, false, m.f);
-        glUniform4f(_colorLocation, _currColor.r, _currColor.g, _currColor.b, _currColor.a);
         
-        //glEnable(GL_TEXTURE_2D);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _currTextureId);
-        //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-        glUniform1i(_samplerLocation, 0);
-        glEnable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
-//		glDepthMask(GL_FALSE);
-        if ( _currBlendMode == BLEND_NONE ){
-			glDisable(GL_BLEND);
-		}else{
-			glEnable(GL_BLEND);
-			if ( _currBlendMode == BLEND_NORMAL ){
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			}else if ( _currBlendMode == BLEND_ADD ){
-				glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
-			}else if ( _currBlendMode == BLEND_MUL ){
-                glBlendFunc(GL_ZERO, GL_SRC_COLOR);
-            }
-		}
+        //setup mesh
+        char* p0 = (char*)&_vertices[0];
+        this->position.set(sizeof(SpriteVertex), p0);
+        this->uv[0].set(sizeof(SpriteVertex), p0+sizeof(float)*3);
+        this->color.set(sizeof(SpriteVertex), p0+sizeof(float)*5);
+        this->verticesCount = _vertices.size();
         
-        const char* p = (char*)&_vertices[0];
-        glEnableVertexAttribArray(_posLocation);
-        glVertexAttribPointer(_posLocation, 3, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), p);
-        glEnableVertexAttribArray(_uvLocation);
-        glVertexAttribPointer(_uvLocation, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), p+3*sizeof(float));
-        
-        glDrawArrays(GL_TRIANGLES, 0, _vertices.size());
+        _pMaterial->draw(*this, PVRTMat4::Identity(), _camera, false);
         
         _vertices.clear();
     }
@@ -128,9 +114,10 @@ namespace lw {
     
     
     //====================================================
-	Sprite* Sprite::createFromFile(const char *file){
+	Sprite* Sprite::createFromFile(const char* textureFile, const char* fxName){
+        assert(textureFile && fxName);
         bool ok = false;
-        Sprite* p = new Sprite(file, false, ok);
+        Sprite* p = new Sprite(textureFile, fxName, false, ok);
         if ( p ){
             if ( ok ){
                 return p;
@@ -142,9 +129,9 @@ namespace lw {
         return NULL;
     }
     
-    Sprite* Sprite::createFromAtlas(const char* key){
+    Sprite* Sprite::createFromAtlas(const char* key, const char* fxName){
         bool ok = false;
-        Sprite* p = new Sprite(key, true, ok);
+        Sprite* p = new Sprite(key, fxName, true, ok);
         if ( p ){
             if ( ok ){
                 return p;
@@ -153,7 +140,6 @@ namespace lw {
                 return NULL;
             }
         }
-        return NULL;
         return NULL;
     }
     
@@ -167,7 +153,7 @@ namespace lw {
         }
     }
     
-    Sprite::Sprite(const char *file, bool fromAtlas, bool &ok){
+    Sprite::Sprite(const char *textureFile, const char *fxName, bool fromAtlas, bool &ok){
         ok = false;
         _ancX = _ancY = 0.f;
         _posX = _posY = 0.f;
@@ -180,9 +166,9 @@ namespace lw {
         _z = 0.f;
         
         if ( fromAtlas ){
-            loadFromAtlas(file);
+            loadFromAtlas(textureFile);
         }else{
-            loadFromFile(file);
+            loadFromFile(textureFile, fxName);
         }
         
         if ( _pTextureRes ){
@@ -194,16 +180,37 @@ namespace lw {
         if ( _pTextureRes ){
 			_pTextureRes->release();
 		}
-    }
-    
-    void Sprite::loadFromFile(const char *file){
-        _pTextureRes = TextureRes::create(file);
-        if ( _pTextureRes ){
-            uvInit();
+        if (_pMaterial && _pMaterial->release() == 0) {
+            _resMgr.del(_materialKey.c_str());
         }
     }
     
-    void Sprite::loadFromAtlas(const char *key){
+    int Sprite::loadFromFile(const char *textureFile, const char *fxName){
+        assert(textureFile && fxName);
+        _pTextureRes = TextureRes::create(textureFile);
+        if (_pTextureRes) {
+            uvInit();
+        }
+        
+        _materialKey = fxName;
+        _materialKey.append("/");
+        _materialKey.append(textureFile);
+        
+        _pMaterial = (Material*)_resMgr.get(_materialKey.c_str());
+        if (_pMaterial == NULL) {
+            _pMaterial = Material::create("sprite.lwfx", fxName);
+            if (_pMaterial == NULL) {
+                lwerror("Material::create failed: sprite.lwfx, %s", fxName);
+                return -1;
+            }
+            _pMaterial->setTexture("input_texture", textureFile, 0);
+            _resMgr.add(_materialKey.c_str(), _pMaterial);
+        }
+        
+        return 0;
+    }
+    
+    int Sprite::loadFromAtlas(const char *key){
         std::map<std::string, AtlasInfo>::iterator it = _atlasMap.find(key);
         if ( it != _atlasMap.end() ){
             AtlasInfo& atlas = it->second;
@@ -212,6 +219,7 @@ namespace lw {
                 setUV(atlas.u, atlas.v, atlas.w, atlas.h);
             }
         }
+        return 0;
     }
     
     void Sprite::setUV(float u, float v, float w, float h){
@@ -309,54 +317,43 @@ namespace lw {
         _z = z;
     }
     
+    static void setSV(SpriteVertex& sv, float x, float y, float z, float u, float v, Color& color) {
+        sv.x = x;
+		sv.y = y;
+        sv.z = z;
+		sv.u = u;
+		sv.v = v;
+        sv.r = color.r;
+        sv.g = color.g;
+        sv.b = color.b;
+        sv.a = color.a;
+    }
+    
     void Sprite::draw(){
         if ( _needUpdate ){
             update();
         }
+        
         //1
 		SpriteVertex v[6];
-		v[0].x = _vertexPos[0].x;
-		v[0].y = _vertexPos[0].y;
-		v[0].z = _z;
-		v[0].u = _u1;
-		v[0].v = _v1;
-        
+        setSV(v[0], _vertexPos[0].x, _vertexPos[0].y, _z, _u1, _v1, _color);
+
 		//2
-		v[1].x = _vertexPos[1].x;
-		v[1].y = _vertexPos[1].y;
-		v[1].z = _z;
-		v[1].u = _u1;
-		v[1].v = _v2;
+        setSV(v[1], _vertexPos[1].x, _vertexPos[1].y, _z, _u1, _v2, _color);
         
 		//3
-		v[2].x = _vertexPos[2].x;
-		v[2].y = _vertexPos[2].y;
-		v[2].z = _z;
-		v[2].u = _u2;
-		v[2].v = _v1;
+        setSV(v[2], _vertexPos[2].x, _vertexPos[2].y, _z, _u2, _v1, _color);
 		
         //3
-		v[3].x = _vertexPos[2].x;
-		v[3].y = _vertexPos[2].y;
-		v[3].z = _z;
-		v[3].u = _u2;
-		v[3].v = _v1;
+        setSV(v[3], _vertexPos[2].x, _vertexPos[2].y, _z, _u2, _v1, _color);
 		
 		//2
-		v[4].x = _vertexPos[1].x;
-		v[4].y = _vertexPos[1].y;
-		v[4].z = _z;
-		v[4].u = _u1;
-		v[4].v = _v2;
-	    
+        setSV(v[4], _vertexPos[1].x, _vertexPos[1].y, _z, _u1, _v2, _color);
+
 		//4
-		v[5].x = _vertexPos[3].x;
-		v[5].y = _vertexPos[3].y;
-		v[5].z = _z;
-		v[5].u = _u2;
-		v[5].v = _v2;
+        setSV(v[5], _vertexPos[3].x, _vertexPos[3].y, _z, _u2, _v2, _color);
         
-        _pvb->collectVetices(v, 6, _color, _blendMode, _pTextureRes->getGlId());
+        _pvb->collectVetices(v, 6, _pMaterial);
     }
     
     void Sprite::update(){
@@ -443,22 +440,22 @@ namespace lw {
     }
     
     void Sprite::addAtlas(const char *file){
-        tinyxml2::XMLDocument doc;
-        doc.LoadFile(_f(file));
-        const tinyxml2::XMLElement *pElem = doc.RootElement();
-        pElem = pElem->FirstChildElement("image");
-        while ( pElem ){
-            const char *name = pElem->Attribute("name");
-            AtlasInfo atlas;
-            atlas.file = pElem->Attribute("file");
-            pElem->QueryIntAttribute("x", &atlas.u);
-            pElem->QueryIntAttribute("y", &atlas.v);
-            pElem->QueryIntAttribute("w", &atlas.w);
-            pElem->QueryIntAttribute("h", &atlas.h);
-            _atlasMap[name] = atlas;
-            
-            pElem = pElem->NextSiblingElement();
-        }
+//        tinyxml2::XMLDocument doc;
+//        doc.LoadFile(_f(file));
+//        const tinyxml2::XMLElement *pElem = doc.RootElement();
+//        pElem = pElem->FirstChildElement("image");
+//        while ( pElem ){
+//            const char *name = pElem->Attribute("name");
+//            AtlasInfo atlas;
+//            atlas.file = pElem->Attribute("file");
+//            pElem->QueryIntAttribute("x", &atlas.u);
+//            pElem->QueryIntAttribute("y", &atlas.v);
+//            pElem->QueryIntAttribute("w", &atlas.w);
+//            pElem->QueryIntAttribute("h", &atlas.h);
+//            _atlasMap[name] = atlas;
+//            
+//            pElem = pElem->NextSiblingElement();
+//        }
     }
     
 } //namespace lw

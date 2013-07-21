@@ -1,37 +1,30 @@
 <lwfx>
     <vs name="vs">
         attribute vec3 _position;
+        attribute vec4 _color;
         attribute vec2 _uv0;
         uniform mat4 _mvp;
         varying highp vec2 v_uv0;
+        varying lowp vec4 v_color;
 
         void main()
         {
             gl_Position = _mvp * vec4(_position, 1.0);
             v_uv0 = _uv0;
+            v_color = _color;
         }
     </vs>
     <fs name="fs">
-        uniform lowp vec4 input_color;
         uniform sampler2D input_texture;
         varying highp vec2 v_uv0;
+        varying lowp vec4 v_color;
 
         void main()
         {
-            gl_FragColor = texture2D(input_texture, v_uv0)*input_color;
+            gl_FragColor = texture2D(input_texture, v_uv0)*v_color;
         }
     </fs>
-    <attribute name="_position" semantic="POSITION"/>
-    <attribute name="_uv0" semantic="UV0"/>
-    <uniform name="_mvp" semantic="WORLDVIEWPROJ"/>
-
-    <input name="input_texture" type="TEXTURE"/>
-    <input name="input_color" type="VEC4"/>
-    
-    <fx name="normal">
-        <pass vs="vs" fs="fs">
-            
-        </pass>
+    <fx name="normal" vs="vs" fs="fs">
     </fx>
 
 </lwfx>

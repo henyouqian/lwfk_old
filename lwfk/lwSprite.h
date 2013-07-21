@@ -6,6 +6,7 @@
 namespace lw{
     
     class TextureRes;
+    class Material;
     
     enum BlendMode{
         BLEND_NONE,
@@ -16,12 +17,13 @@ namespace lw{
     struct SpriteVertex{
         float x, y, z;
         float u, v;
+        float r, g, b, a;
     };
     
 	class Sprite{
     public:
-        static Sprite* createFromFile(const char* file);
-        static Sprite* createFromAtlas(const char* key);
+        static Sprite* createFromFile(const char* textureFile, const char* fxName);
+        static Sprite* createFromAtlas(const char* key, const char* fxName);
         ~Sprite();
         void setUV(float u, float v, float w, float h);
         void getUV(float &u, float &v, float &w, float &h);
@@ -43,6 +45,9 @@ namespace lw{
         
     private:
         void uvInit();
+        
+        Material *_pMaterial;
+        std::string _materialKey;
         TextureRes* _pTextureRes;
         float _ancX, _ancY;
 		float _posX, _posY;
@@ -56,9 +61,9 @@ namespace lw{
         bool _needUpdate;
         BlendMode _blendMode;
         
-        Sprite(const char *file, bool fromAtlas, bool &ok);
-        void loadFromFile(const char *file);
-        void loadFromAtlas(const char *key);
+        Sprite(const char *textureFile, const char *fxName, bool fromAtlas, bool &ok);
+        int loadFromFile(const char* textureFile, const char* fxName);
+        int loadFromAtlas(const char *key);
         void update();
         
     public:

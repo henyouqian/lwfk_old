@@ -9,11 +9,12 @@
 namespace lw {
 
     namespace {
-        ResMgr _resMgr;
+        KeyResMgr _resMgr;
     }
 	
 
-	TextureRes::TextureRes(const char* fileName, bool& ok):Res(fileName, _resMgr), _glId(-1) {
+	TextureRes::TextureRes(const char* fileName, bool& ok)
+    :_glId(-1) {
         ok = false;
 		assert(fileName);
 		_fileName = fileName;
@@ -60,17 +61,19 @@ namespace lw {
 		if ( _glId != -1 ){
 			glDeleteTextures(1, &_glId);
 		}
+        _resMgr.del(_fileName.c_str());
 	}
 	TextureRes* TextureRes::create(const char* fileName){
 		assert(fileName);
         
-        TextureRes *pRes = (TextureRes*)_resMgr.getRes(fileName);
+        TextureRes *pRes = (TextureRes*)_resMgr.get(fileName);
         if (pRes) {
             return pRes;
         } else {
             bool ok = false;
             TextureRes* p = new TextureRes(fileName, ok);
 			if ( p && ok  ){
+                _resMgr.add(fileName, p);
 				return p;
 			}else if (p){
 				delete p;

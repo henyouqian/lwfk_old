@@ -1,32 +1,39 @@
 #include "lwPrefix.h"
 #include "lwRes.h"
+#include "lwLog.h"
 
 namespace lw {
     
-    Res::Res(const char *name, ResMgr &mgr): _refCount(1), _name(name), _mgr(mgr)
-    {
-        _mgr.addRes(this);
+    int KeyResMgr::add(const char *key, Res *pRes) {
+        assert(key);
+        std::map<std::string, Res*>::iterator it = _resMap.find(key);
+        if (it != _resMap.end()) {
+            lwerror("Key already exists: %s", key);
+            return -1;
+        }
+        _resMap[key] = pRes;
+        return 0;
     }
     
-    Res::~Res() {
-        _mgr.delRes(this);
-    };
-    
-    void Res::retain()
-    {
-        ++_refCount;
+    Res* KeyResMgr::get(const char *key) {
+        assert(key);
+        std::map<std::string, Res*>::iterator it = _resMap.find(key);
+        if (it == _resMap.end()) {
+            return NULL;
+        }
+        it->second->retain();
+        return it->second;
     }
     
-    void Res::release()
-    {
-        --_refCount;
-        if ( _refCount == 0 )
-            delete this;
-    }
-    
-    const char* Res::getName()
-    {
-        return _name.c_str();
+    int KeyResMgr::del(const char *key) {
+        assert(key);
+        std::map<std::string, Res*>::iterator it = _resMap.find(key);
+        if (it == _resMap.end()) {
+            lwerror("Key not found: %s", key);
+            return -1;
+        }
+        _resMap.erase(it);
+        return 0;
     }
     
 }

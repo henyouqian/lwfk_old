@@ -9,32 +9,31 @@ namespace lw
     Camera::Camera()
     {
         perspective(PVRT_PIf/3.f, 3.0f/2.0f, 1, 1000);
-        PVRTVECTOR3 eye = {10.f, 10.f, 10.f};
-        PVRTVECTOR3 at = {0.f, 0.f, 0.f};
-        PVRTVECTOR3 up = {0.f, 1.f, 0.f};
+        PVRTVec3 eye(10.f, 10.f, 10.f);
+        PVRTVec3 at(0.f, 0.f, 0.f);
+        PVRTVec3 up(0.f, 1.f, 0.f);
         lookat(eye, at, up);
     }
 
-    void Camera::getView(PVRTMATRIX& mat) const
+    void Camera::getView(PVRTMat4& mat) const
     {
         mat = _viewMatrix;
     }
 
-    void Camera::getProj(PVRTMATRIX& mat) const
+    void Camera::getProj(PVRTMat4& mat) const
     {
         mat = _projMatrix;
     }
 
-    void Camera::getViewProj(PVRTMATRIX& mat) const
+    void Camera::getViewProj(PVRTMat4& mat) const
     {
-    //    PVRTMatrixMultiplyF(mat, _projMatrix, _viewMatrix);
-        PVRTMatrixMultiplyF(mat, _viewMatrix, _projMatrix);
+        mat = _projMatrix * _viewMatrix;
     }
 
     void Camera::lookat(
-        const PVRTVECTOR3& eye,
-        const PVRTVECTOR3& at,
-        const PVRTVECTOR3& up)
+        const PVRTVec3& eye,
+        const PVRTVec3& at,
+        const PVRTVec3& up)
     {
         PVRTMatrixLookAtRH(_viewMatrix, eye, at, up);
     }
@@ -48,9 +47,9 @@ namespace lw
         PVRTMatrixPerspectiveFovRH(_projMatrix, fovy, aspect, znear, zfar, false);
     }
         
-    void _ortho(PVRTMATRIX &m, float left, float right, float bottom, float top, float nearp, float farp)
+    void _ortho(PVRTMat4 &m, float left, float right, float bottom, float top, float nearp, float farp)
     {
-        PVRTMatrixIdentity(m);
+        m = PVRTMat4::Identity();
         
         m[0][0] = 2 / (right - left);
         m[1][1] = 2 / (top - bottom);

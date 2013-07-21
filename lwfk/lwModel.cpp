@@ -21,13 +21,14 @@ namespace lw {
         ~PodRes();
         
         CPVRTModelPOD _pod;
+        std::string _fileName;
     };
     
-    ResMgr _resMgr;
+    KeyResMgr _resMgr;
     
     PodRes* PodRes::create(const char *file) {
         assert(file);
-        PodRes *pRes = (PodRes*)_resMgr.getRes(file);
+        PodRes *pRes = (PodRes*)_resMgr.get(file);
         if (pRes)
             return pRes;
         
@@ -38,13 +39,14 @@ namespace lw {
             delete pRes;
             return NULL;
         }
+        _resMgr.add(file, pRes);
         return pRes;
     }
     
-    PodRes::PodRes(const char *file, bool &ok)
-    :Res(file, _resMgr){
-        ok = false;
+    PodRes::PodRes(const char *file, bool &ok) {
         assert(file);
+        ok = false;
+        _fileName = file;
         
         CPVRTResourceFile resFile(file);
         if (resFile.IsOpen()) {
@@ -58,7 +60,7 @@ namespace lw {
     }
     
     PodRes::~PodRes() {
-        
+        _resMgr.del(_fileName.c_str());
     }
     
     CPVRTModelPOD& PodRes::getPOD() {
@@ -118,19 +120,19 @@ namespace lw {
         for (unsigned int i = 0; i < pod.nNumMesh; ++i)
         {
             // Load vertex data into buffer object
-            SPODMesh& Mesh = pod.pMesh[i];
-            unsigned int uiSize = Mesh.nNumVertex * Mesh.sVertex.nStride;
+            SPODMesh& podMesh = pod.pMesh[i];
+            unsigned int uiSize = podMesh.nNumVertex * podMesh.sVertex.nStride;
             glBindBuffer(GL_ARRAY_BUFFER, _vbos[i]);
-            glBufferData(GL_ARRAY_BUFFER, uiSize, Mesh.pInterleaved, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, uiSize, podMesh.pInterleaved, GL_STATIC_DRAW);
             
             // Load index data into buffer object if available
             _indexVbos[i] = 0;
-            if (Mesh.sFaces.pData)
+            if (podMesh.sFaces.pData)
             {
                 glGenBuffers(1, &_indexVbos[i]);
-                uiSize = PVRTModelPODCountIndices(Mesh) * sizeof(GLshort);
+                uiSize = PVRTModelPODCountIndices(podMesh) * sizeof(GLushort);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexVbos[i]);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, uiSize, Mesh.sFaces.pData, GL_STATIC_DRAW);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, uiSize, podMesh.sFaces.pData, GL_STATIC_DRAW);
             }
         }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -152,7 +154,7 @@ namespace lw {
             for (int i = 0; i < maxuv; ++i) {
                 mesh.uv[i].set(pMesh->psUVW[i].nStride, pMesh->psUVW[i].pData);
             }
-            mesh.faceCount = pMesh->nNumFaces;
+            mesh.verticesCount = pMesh->nNumFaces*3;
             _meshes.push_back(mesh);
             
             //material
@@ -214,7 +216,7 @@ namespace lw {
         std::vector<lw::Material*>::iterator it = _materials.begin();
         std::vector<lw::Material*>::iterator itend = _materials.end();
         for (;it != itend; ++it) {
-            delete (*it);
+            (*it)->release();
         }
     }
     
@@ -238,8 +240,8 @@ namespace lw {
                 assert(_vbos[meshIdx] && _indexVbos[meshIdx]);
                 glBindBuffer(GL_ARRAY_BUFFER, _vbos[meshIdx]);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexVbos[meshIdx]);
-                
-                _materials[meshIdx]->draw(_meshes[meshIdx], mWorld * _worldMatrix, camera);
+
+                _materials[meshIdx]->draw(_meshes[meshIdx], mWorld * _worldMatrix, camera, true);
                 
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
