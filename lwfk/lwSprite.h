@@ -5,15 +5,9 @@
 
 namespace lw{
     
-    class TextureRes;
     class Material;
+    class TextureRes;
     
-    enum BlendMode{
-        BLEND_NONE,
-        BLEND_NORMAL,
-        BLEND_ADD,
-        BLEND_MUL,
-    };
     struct SpriteVertex{
         float x, y, z;
         float u, v;
@@ -38,17 +32,16 @@ namespace lw{
 		void setSize(float w, float h);
 		void getSize(float &w, float &h);
         void setColor(const Color &color);
-        void setBlendMode(BlendMode blendMode);
         void setZ(float z);
         void draw();
-        GLuint getGlId();
+//        GLuint getGlId();
         
     private:
         void uvInit();
         
         Material *_pMaterial;
+        TextureRes *_pTexture;
         std::string _materialKey;
-        TextureRes* _pTextureRes;
         float _ancX, _ancY;
 		float _posX, _posY;
 		float _rotate;
@@ -59,7 +52,6 @@ namespace lw{
         float _z;
         PVRTVec2 _vertexPos[4];
         bool _needUpdate;
-        BlendMode _blendMode;
         
         Sprite(const char *textureFile, const char *fxName, bool fromAtlas, bool &ok);
         int loadFromFile(const char* textureFile, const char* fxName);
@@ -70,7 +62,6 @@ namespace lw{
         static void init();
         static void quit();
         static void flush();
-        static void collectVetices(SpriteVertex *vertices, int numVertices, Color &color, BlendMode blendMode, GLuint textureId);
         
         static void addAtlas(const char *file);
     };

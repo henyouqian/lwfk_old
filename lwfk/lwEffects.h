@@ -30,10 +30,6 @@ namespace lw
         
         static EffectsRes* create(const char *file);
         GLuint getProgram(const char *fxName);
-        int getUniformLocation(const char* uniform, const char *fxName);
-        
-        void use(const char *fxName);
-        bool checkFxName(const char *fxName);
         
     private:
         EffectsRes(const char *file, bool &ok);

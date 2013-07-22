@@ -118,6 +118,10 @@ namespace lw {
             glUniform1i(_location, _unit);
         }
         
+        TextureRes *getTexture() {
+            return _pTexture;
+        }
+        
     private:
         TextureRes *_pTexture;
         GLint _unit;
@@ -269,25 +273,24 @@ namespace lw {
             lwerror("EffectsRes::create failed: effectsFile=%s", fxFile);
             return;
         }
-        if (!_pEffects->checkFxName(fxName)) {
+        
+        //enumerate attributes and uniforms
+        _program = _pEffects->getProgram(fxName);
+        if (_program == 0) {
             lwerror("invalid fxName: %s", fxName);
             return;
         }
-        _fxName = fxName;
-        
-        //enumerate attributes and uniforms
-        GLuint program = _pEffects->getProgram(_fxName.c_str());
         int total = -1;
         
-        glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &total);
+        glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &total);
         for(int i=0; i<total; ++i)  {
             int name_len=-1, num=-1;
             GLenum type = GL_ZERO;
             char name[100];
-            glGetActiveAttrib( program, GLuint(i), sizeof(name)-1,
+            glGetActiveAttrib( _program, GLuint(i), sizeof(name)-1,
                               &name_len, &num, &type, name );
             name[name_len] = 0;
-            GLuint location = glGetAttribLocation(program, name);
+            GLuint location = glGetAttribLocation(_program, name);
             MaterialInput *pInput = NULL;
             
             if (strcmp(name, "_position") == 0) {
@@ -316,15 +319,15 @@ namespace lw {
             }
         }
         
-        glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &total);
+        glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &total);
         for(int i=0; i<total; ++i)  {
             int name_len=-1, num=-1;
             GLenum type = GL_ZERO;
             char name[100];
-            glGetActiveUniform( program, GLuint(i), sizeof(name)-1,
+            glGetActiveUniform( _program, GLuint(i), sizeof(name)-1,
                                &name_len, &num, &type, name );
             name[name_len] = 0;
-            GLuint location = glGetUniformLocation(program, name);
+            GLuint location = glGetUniformLocation(_program, name);
             MaterialInput *pInput = NULL;
             
             if (strcmp(name, "_mv") == 0) {
@@ -369,7 +372,8 @@ namespace lw {
     }
     
     void Material::setFloat(const char *inputName, float value) {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
+        int location = glGetUniformLocation(_program, inputName);
+//        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -385,7 +389,7 @@ namespace lw {
     }
     
     void Material::setVec2(const char *inputName, float x, float y) {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
+        int location = glGetUniformLocation(_program, inputName);
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -401,7 +405,7 @@ namespace lw {
     }
     
     void Material::setVec3(const char *inputName, float x, float y, float z) {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
+        int location = glGetUniformLocation(_program, inputName);
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -417,7 +421,7 @@ namespace lw {
     }
     
     void Material::setVec4(const char *inputName, float x, float y, float z, float w)  {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
+        int location = glGetUniformLocation(_program, inputName);
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
             return;
@@ -432,24 +436,25 @@ namespace lw {
         }
     }
     
-    void Material::setTexture(const char *inputName, const char *textureFile, GLint unit) {
-        int location = _pEffects->getUniformLocation(inputName, _fxName.c_str());
+    TextureRes* Material::setTexture(const char *inputName, const char *textureFile, GLint unit) {
+        int location = glGetUniformLocation(_program, inputName);
         if (location == -1) {
             lwerror("wrong input name: %s", inputName);
-            return;
+            return NULL;
         }
         
         MaterialInputTexture *pInput = (MaterialInputTexture*)findInput(_uniformInputs, location);
         if ( !pInput ) {
-            MaterialInputTexture *p = new MaterialInputTexture(location, textureFile, unit);
-            _uniformInputs.push_back(p);
+            pInput = new MaterialInputTexture(location, textureFile, unit);
+            _uniformInputs.push_back(pInput);
         } else {
             pInput->set(textureFile, unit);
         }
+        return pInput->getTexture();
     }
     
     void Material::draw(const lw::Mesh &mesh, const PVRTMat4 &matWorld, const lw::Camera &camera, bool useIndex) {
-        _pEffects->use(_fxName.c_str());
+        glUseProgram(_program);
         
         std::vector<MaterialInput*>::iterator it = _attribInputs.begin();
         std::vector<MaterialInput*>::iterator itend = _attribInputs.end();

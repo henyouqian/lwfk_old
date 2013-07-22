@@ -239,28 +239,5 @@ namespace lw {
         return 0;
     }
 
-    int EffectsRes::getUniformLocation(const char* uniform, const char *fxName) {
-        GLuint program = getProgram(fxName);
-        return glGetUniformLocation(program, uniform);
-    }
-
-    void EffectsRes::use(const char* fxName) {
-        assert(fxName);
-        GLuint program = getProgram(fxName);
-        glUseProgram(program);
-    }
-    
-    bool EffectsRes::checkFxName(const char *fxName) {
-        assert(fxName);
-        
-        std::vector<EffectFx*>::iterator it = _fxs.begin();
-        std::vector<EffectFx*>::iterator itend = _fxs.end();
-        for (;it != itend; ++it) {
-            if ((*it)->name.compare(fxName) == 0) {
-                return true;
-            }
-        }
-        return false;
-    }
     
 } //namespace lw

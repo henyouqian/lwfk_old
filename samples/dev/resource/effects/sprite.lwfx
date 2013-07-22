@@ -25,6 +25,8 @@
         }
     </fs>
     <fx name="normal" vs="vs" fs="fs">
+        <glDepthMask value="GL_TRUE"/>
+        <glDisable value="GL_BLEND"/>
     </fx>
 
 </lwfx>

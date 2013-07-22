@@ -11,6 +11,7 @@ namespace lw {
     class Mesh;
     class Camera;
     class MaterialInput;
+    class TextureRes;
     
     class Material : public Res {
     public:
@@ -20,7 +21,7 @@ namespace lw {
         void setVec2(const char *inputName, float x, float y);
         void setVec3(const char *inputName, float x, float y, float z);
         void setVec4(const char *inputName, float x, float y, float z, float w);
-        void setTexture(const char *inputName, const char *textureFile, GLint unit);
+        TextureRes* setTexture(const char *inputName, const char *textureFile, GLint unit);
         
         void draw(const lw::Mesh &mesh, const PVRTMat4 &matWorld, const lw::Camera &camera, bool useIndex);
         
@@ -30,7 +31,7 @@ namespace lw {
         ~Material();
         
         EffectsRes *_pEffects;
-        std::string _fxName;
+        GLuint _program;
         std::vector<MaterialInput*> _attribInputs;
         std::vector<MaterialInput*> _uniformInputs;
     };

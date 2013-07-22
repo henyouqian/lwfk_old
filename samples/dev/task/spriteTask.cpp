@@ -7,6 +7,7 @@
 #include "lwfk/lwSprite.h"
 #include "lwfk/lwModel.h"
 #include "lwfk/lwCamera.h"
+#include "lwfk/lwRenderState.h"
 
 #include <math.h>
 
@@ -71,16 +72,25 @@ void SpriteTask::vDraw() {
     
     
     _pSprite->setAnchor(0, 0);
-    _pSprite->setPos(sin(t)*100.f + 100.f, 0);
+    _pSprite->setAnchor(128, 128);
+    _pSprite->setPos(sinf(t)*100.f+100.f, 128);
     _pSprite->setRotate(0);
     _pSprite->setScale(1.f, 1.f);
+    _pSprite->setColor(lw::Color(1.f, 1.f, 1.f, .1f));
+    lw::rsEnableBlend();
+    lw::rsFlush();
     _pSprite->draw();
+    _pSprite->flush();
     
     _pSprite->setAnchor(128, 128);
     _pSprite->setPos(640-256, 1136-256);
     _pSprite->setRotate(t);
     float s = sinf(t*.3f)*.5+1.f;
     _pSprite->setScale(s, s);
+    _pSprite->setColor(lw::Color(1.f, 1.f, 0.f, 1.f));
+    lw::rsEnableBlend();
+    lw::rsBlendFunc(GL_ONE, GL_ONE);
+    lw::rsFlush();
     _pSprite->draw();
 }
 

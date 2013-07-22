@@ -48,7 +48,6 @@
 		B34A6EA917700929002DBC4A /* lwTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B34A6EA717700929002DBC4A /* lwTexture.cpp */; };
 		B34A6ECB17701026002DBC4A /* lwColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B34A6EC917701026002DBC4A /* lwColor.cpp */; };
 		B370842D178C825700C71C5D /* lwMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B370842B178C825700C71C5D /* lwMaterial.cpp */; };
-		B37724BE175A62A70059300F /* lwFileSys.mm in Sources */ = {isa = PBXBuildFile; fileRef = B37724BD175A62A70059300F /* lwFileSys.mm */; };
 		B37FC64E1771BB4900A22473 /* PVRTPrint3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC64B1771BB4900A22473 /* PVRTPrint3D.cpp */; };
 		B37FC6511771BEE400A22473 /* lwSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC6501771BEE400A22473 /* lwSprite.cpp */; };
 		B37FC6591773419C00A22473 /* lwTouch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B37FC6571773419C00A22473 /* lwTouch.cpp */; };
@@ -60,6 +59,7 @@
 		B3D260461794797200C1D576 /* lwModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3D260441794797200C1D576 /* lwModel.cpp */; };
 		B3F760951759E24B00DE9BBF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F760941759E24B00DE9BBF /* Foundation.framework */; };
 		B3F760EA1759E3B900DE9BBF /* lwApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3F760E81759E3B800DE9BBF /* lwApp.cpp */; };
+		B3FCDD35179D66D000E4C70B /* lwRenderState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3FCDD33179D66D000E4C70B /* lwRenderState.cpp */; };
 		B3FDD0E3176A369000B82210 /* lwTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3FDD0E1176A369000B82210 /* lwTask.cpp */; };
 /* End PBXBuildFile section */
 
@@ -172,8 +172,6 @@
 		B34A6ECA17701026002DBC4A /* lwColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwColor.h; sourceTree = "<group>"; };
 		B370842B178C825700C71C5D /* lwMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwMaterial.cpp; sourceTree = "<group>"; };
 		B370842C178C825700C71C5D /* lwMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwMaterial.h; sourceTree = "<group>"; };
-		B37724BC175A62A70059300F /* lwFileSys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwFileSys.h; sourceTree = "<group>"; };
-		B37724BD175A62A70059300F /* lwFileSys.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = lwFileSys.mm; sourceTree = "<group>"; };
 		B37724BF175A67EA0059300F /* lwLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwLog.h; sourceTree = "<group>"; };
 		B37FC64B1771BB4900A22473 /* PVRTPrint3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRTPrint3D.cpp; sourceTree = "<group>"; };
 		B37FC64C1771BB4900A22473 /* PVRTPrint3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRTPrint3D.h; sourceTree = "<group>"; };
@@ -198,6 +196,8 @@
 		B3F760941759E24B00DE9BBF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B3F760E81759E3B800DE9BBF /* lwApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwApp.cpp; sourceTree = "<group>"; };
 		B3F760E91759E3B800DE9BBF /* lwApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwApp.h; sourceTree = "<group>"; };
+		B3FCDD33179D66D000E4C70B /* lwRenderState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwRenderState.cpp; sourceTree = "<group>"; };
+		B3FCDD34179D66D000E4C70B /* lwRenderState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwRenderState.h; sourceTree = "<group>"; };
 		B3FDD0E1176A369000B82210 /* lwTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwTask.cpp; sourceTree = "<group>"; };
 		B3FDD0E2176A369000B82210 /* lwTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwTask.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -451,14 +451,14 @@
 				B370842C178C825700C71C5D /* lwMaterial.h */,
 				B3A7F007175B0408002DE3F0 /* lwEffects.cpp */,
 				B3A7F008175B0408002DE3F0 /* lwEffects.h */,
+				B3FCDD33179D66D000E4C70B /* lwRenderState.cpp */,
+				B3FCDD34179D66D000E4C70B /* lwRenderState.h */,
 				B3959B15179847870039D09E /* lwRes.cpp */,
 				B3A7F003175B005D002DE3F0 /* lwRes.h */,
 				B3CF95BF178740C100E0B6B9 /* lwLog.cpp */,
 				B37724BF175A67EA0059300F /* lwLog.h */,
 				B3F760E81759E3B800DE9BBF /* lwApp.cpp */,
 				B3F760E91759E3B800DE9BBF /* lwApp.h */,
-				B37724BC175A62A70059300F /* lwFileSys.h */,
-				B37724BD175A62A70059300F /* lwFileSys.mm */,
 				B3A7F004175B0148002DE3F0 /* lwPrefix.h */,
 				B3A7EFEE175AFF2A002DE3F0 /* libraries */,
 				B3F760971759E24B00DE9BBF /* Supporting Files */,
@@ -534,8 +534,8 @@
 				B34A6EA917700929002DBC4A /* lwTexture.cpp in Sources */,
 				B306FAEA1770A86800AA4963 /* PVRTPrint3DAPI.cpp in Sources */,
 				B34A6EA3176F7CA2002DBC4A /* image_DXT.c in Sources */,
+				B3FCDD35179D66D000E4C70B /* lwRenderState.cpp in Sources */,
 				B37FC64E1771BB4900A22473 /* PVRTPrint3D.cpp in Sources */,
-				B37724BE175A62A70059300F /* lwFileSys.mm in Sources */,
 				B306FAFF1770A86800AA4963 /* PVRTTrans.cpp in Sources */,
 				B34A6EA5176F7CA2002DBC4A /* SOIL.c in Sources */,
 				B3FDD0E3176A369000B82210 /* lwTask.cpp in Sources */,

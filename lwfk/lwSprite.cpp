@@ -4,6 +4,7 @@
 #include "lwEffects.h"
 #include "lwMaterial.h"
 #include "lwMesh.h"
+#include "lwRenderState.h"
 #include "lwApp.h"
 #include "lwLog.h"
 #include "tinyxml2/tinyxml2.h"
@@ -27,7 +28,7 @@ namespace lw {
     public:
         SpriteVertexBuffer();
         ~SpriteVertexBuffer();
-        void collectVetices(SpriteVertex *vertices, int numVertices, Color &color, BlendMode blendMode, GLuint textureId);
+        
         void collectVetices(SpriteVertex *vertices, int numVertices, Material *pMaterial);
         void flush();
         
@@ -38,11 +39,7 @@ namespace lw {
         
     private:
         std::vector<SpriteVertex> _vertices;
-        Color _currColor;
-        BlendMode _currBlendMode;
-        GLuint _currTextureId;
-        EffectsRes *_pEffects;
-        Material *_pMaterial;
+        Material *_pCurrMaterial;
         int _posLocation;
         int _uvLocation;
         int _mvpMatLocation;
@@ -52,39 +49,19 @@ namespace lw {
     
     SpriteVertexBuffer::SpriteVertexBuffer(){
         _vertices.reserve(VERTICIS_NUM_RESERVE);
-        _pEffects = EffectsRes::create("sprite.lwfx");
-        _pMaterial = NULL;
+        _pCurrMaterial = NULL;
     }
     
     SpriteVertexBuffer::~SpriteVertexBuffer(){
-        if ( _pEffects ){
-            _pEffects->release();
-        }
+        
     }
     
-    void SpriteVertexBuffer::collectVetices(SpriteVertex *vertices, int numVertices, Color &color, BlendMode blendMode, GLuint textureId){
-        if ( !_vertices.empty() && 
-            ( color != _currColor 
-             || blendMode != _currBlendMode 
-             || textureId != _currTextureId 
-             || _vertices.size() >= VERTICIS_NUM_LIMIT-3 ) )
-        {
-            flush();
-        }
-        _currColor = color;
-        _currBlendMode = blendMode;
-        _currTextureId = textureId;
-        
-        for ( int i = 0; i < numVertices; ++i ) {
-            _vertices.push_back(vertices[i]);
-        }
-    }
     
     void SpriteVertexBuffer::collectVetices(SpriteVertex *vertices, int numVertices, Material *pMaterial) {
-        if (pMaterial != _pMaterial || _vertices.size() >= VERTICIS_NUM_LIMIT) {
+        if (pMaterial != _pCurrMaterial || _vertices.size() >= VERTICIS_NUM_LIMIT) {
             flush();
         }
-        _pMaterial = pMaterial;
+        _pCurrMaterial = pMaterial;
         
         for ( int i = 0; i < numVertices; ++i ) {
             _vertices.push_back(vertices[i]);
@@ -96,6 +73,9 @@ namespace lw {
             return;
         }
         
+//        glEnable(GL_BLEND);
+//        glBlendFunc(GL_ONE, GL_ONE);
+        
         //setup mesh
         char* p0 = (char*)&_vertices[0];
         this->position.set(sizeof(SpriteVertex), p0);
@@ -103,7 +83,7 @@ namespace lw {
         this->color.set(sizeof(SpriteVertex), p0+sizeof(float)*5);
         this->verticesCount = _vertices.size();
         
-        _pMaterial->draw(*this, PVRTMat4::Identity(), _camera, false);
+        _pCurrMaterial->draw(*this, PVRTMat4::Identity(), _camera, false);
         
         _vertices.clear();
     }
@@ -160,26 +140,20 @@ namespace lw {
         _rotate = 0.f;
         _scaleX = _scaleY = 1.f;
         _color.set(1.0f, 1.0f, 1.0f, 1.0f);
-        _blendMode = BLEND_NORMAL;
         _needUpdate = true;
-        _pTextureRes = NULL;
         _z = 0.f;
         
+        int err = 0;
         if ( fromAtlas ){
-            loadFromAtlas(textureFile);
+            err = loadFromAtlas(textureFile);
         }else{
-            loadFromFile(textureFile, fxName);
+            err = loadFromFile(textureFile, fxName);
         }
         
-        if ( _pTextureRes ){
-            ok = true;
-        }
+        ok = !err;
     }
     
     Sprite::~Sprite(){
-        if ( _pTextureRes ){
-			_pTextureRes->release();
-		}
         if (_pMaterial && _pMaterial->release() == 0) {
             _resMgr.del(_materialKey.c_str());
         }
@@ -187,10 +161,6 @@ namespace lw {
     
     int Sprite::loadFromFile(const char *textureFile, const char *fxName){
         assert(textureFile && fxName);
-        _pTextureRes = TextureRes::create(textureFile);
-        if (_pTextureRes) {
-            uvInit();
-        }
         
         _materialKey = fxName;
         _materialKey.append("/");
@@ -203,28 +173,33 @@ namespace lw {
                 lwerror("Material::create failed: sprite.lwfx, %s", fxName);
                 return -1;
             }
-            _pMaterial->setTexture("input_texture", textureFile, 0);
+            _pTexture = _pMaterial->setTexture("input_texture", textureFile, 0);
+            if (_pTexture == NULL) {
+                lwerror("_pMaterial->setTexture failed: %s", textureFile);
+                return -1;
+            }
             _resMgr.add(_materialKey.c_str(), _pMaterial);
         }
+        uvInit();
         
         return 0;
     }
     
     int Sprite::loadFromAtlas(const char *key){
-        std::map<std::string, AtlasInfo>::iterator it = _atlasMap.find(key);
-        if ( it != _atlasMap.end() ){
-            AtlasInfo& atlas = it->second;
-            _pTextureRes = TextureRes::create(atlas.file.c_str());
-            if ( _pTextureRes ){
-                setUV(atlas.u, atlas.v, atlas.w, atlas.h);
-            }
-        }
-        return 0;
+//        std::map<std::string, AtlasInfo>::iterator it = _atlasMap.find(key);
+//        if ( it != _atlasMap.end() ){
+//            AtlasInfo& atlas = it->second;
+////            _pTextureRes = TextureRes::create(atlas.file.c_str());
+//            if ( _pTextureRes ){
+//                setUV(atlas.u, atlas.v, atlas.w, atlas.h);
+//            }
+//        }
+        return -1;
     }
     
     void Sprite::setUV(float u, float v, float w, float h){
-        float texW = (float)_pTextureRes->getWidth();
-        float texH = (float)_pTextureRes->getHeight();
+        float texW = (float)_pTexture->getWidth();
+        float texH = (float)_pTexture->getHeight();
         
         _u = u;
         _v = v;
@@ -239,8 +214,8 @@ namespace lw {
     
     void Sprite::uvInit(){
         _u = _v = 0.f;
-        _w = (float)_pTextureRes->getWidth();
-        _h = (float)_pTextureRes->getHeight();
+        _w = (float)_pTexture->getWidth();
+        _h = (float)_pTexture->getHeight();
         _u1 = _v1 = 0.f;
         _u2 = _v2 = 1.f;
     }
@@ -307,10 +282,6 @@ namespace lw {
     
     void Sprite::setColor(const Color& color){
         _color = color;
-    }
-    
-    void Sprite::setBlendMode(BlendMode blendMode){
-        _blendMode = blendMode;
     }
     
     void Sprite::setZ(float z) {
@@ -409,9 +380,9 @@ namespace lw {
 		_vertexPos[3].y = -ptt[3].y;
     }
     
-    GLuint Sprite::getGlId(){
-        return _pTextureRes->getGlId();
-    }
+//    GLuint Sprite::getGlId(){
+//        return _pTextureRes->getGlId();
+//    }
 
     
     //===============================================
@@ -435,9 +406,6 @@ namespace lw {
         _pvb->flush();
     }
     
-    void Sprite::collectVetices(SpriteVertex *vertices, int numVertices, Color &color, BlendMode blendMode, GLuint textureId){
-        _pvb->collectVetices(vertices, numVertices, color, blendMode, textureId);
-    }
     
     void Sprite::addAtlas(const char *file){
 //        tinyxml2::XMLDocument doc;

@@ -24,6 +24,7 @@ LOCAL_SRC_FILES := \
 					lwfk/lwModel.cpp \
 					lwfk/lwRes.cpp \
 					lwfk/lwSprite.cpp \
+					lwfk/lwRenderState.cpp \
 					lwfk/lwTask.cpp \
 					lwfk/lwTexture.cpp \
 					lwfk/lwTouch.cpp \
