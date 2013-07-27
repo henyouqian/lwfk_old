@@ -56,7 +56,7 @@ void SpriteTask::vUpdate() {
 
 
 void SpriteTask::vDraw() {
-    glClearColor(1.f, 0.f, 1.f, 1.0f);
+    glClearColor(0.f, 0.f, 0.f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     static float t = 0;
@@ -95,23 +95,21 @@ void SpriteTask::vDraw() {
 }
 
 void SpriteTask::vTouchBegan(const lw::Touch &touch) {
-//    lwinfo("vTouchBegan:" << touch.x << "," << touch.y);
 //    stop();
 //    gSliderTask.start();
     lwinfo("vTouchBegan:%f, %f", touch.x, touch.y);
 }
 
 void SpriteTask::vTouchMoved(const lw::Touch &touch) {
-//    lwinfo("vTouchMoved:" << touch.x << "," << touch.y);
-    lwinfo("vTouchMoved:%f, %f", touch.x, touch.y);
+    lwinfo("vTouchMoved:%f, %f, %f, %f", touch.x, touch.y, touch.prevX, touch.prevY);
 }
 
 void SpriteTask::vTouchEnded(const lw::Touch &touch)  {
-//    lwinfo("vTouchEnded:" << touch.x << "," << touch.y);
+    lwinfo("vTouchEnded:%f, %f", touch.x, touch.y);
 }
 
 void SpriteTask::vTouchCanceled(const lw::Touch &touch)  {
-//    lwinfo("vTouchCanceled:" << touch.x << "," << touch.y);
+   lwinfo("vTouchCanceled:%f, %f", touch.x, touch.y);
 }
 
 

@@ -8,10 +8,13 @@ namespace lw{
         void set(float x, float y, float prevX, float prevY);
 	};
     
-    void touchBegan(int key, float x, float y, float prevX, float prevY);
+    void touchBegan(int key, float x, float y);
     void touchMoved(int key, float x, float y, float prevX, float prevY);
     void touchEnded(int key, float x, float y, float prevX, float prevY);
     void touchCanceled(int key, float x, float y, float prevX, float prevY);
+
+    lw::Touch* findTouch(int key);
+    std::map<int, Touch>& getTouchMap();
 
 } //namespace lw
 

@@ -566,10 +566,7 @@
 		float Position[2] = { touchLocation.x, touchLocation.y };
 		m_pPVRShellInit->BeganTouch(Position, m_pPVRShellInit);
         
-        CGPoint prevLocation = [touch previousLocationInView:self];
-        if(_scale != 1.0)
-			prevLocation.x*=_scale;prevLocation.y*=_scale;
-        lw::touchBegan((int)touch, touchLocation.x, touchLocation.y, prevLocation.x, prevLocation.y);
+        lw::touchBegan((int)touch, touchLocation.x, touchLocation.y);
 	}
 }
 
