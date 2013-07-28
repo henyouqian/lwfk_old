@@ -553,9 +553,9 @@
 // Handles the start of a touch
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if ([touches count] != 1)
-		return;
-		
+//	if ([touches count] != 1)
+//		return;
+//		
 	for( UITouch *touch in touches )
 	{
 		// Grab the location of the touch
@@ -573,8 +573,8 @@
 // Handles the continuation of a touch.
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if ([touches count] != 1)
-		return;
+//	if ([touches count] != 1)
+//		return;
 		
 	for( UITouch *touch in touches )
 	{
@@ -586,23 +586,21 @@
 		float Position[2] = { touchLocation.x, touchLocation.y };
 		m_pPVRShellInit->MovedTouch(Position, m_pPVRShellInit);
         
-        CGPoint prevLocation = [touch previousLocationInView:self];
-        if(_scale != 1.0)
-			prevLocation.x*=_scale;prevLocation.y*=_scale;
-        lw::touchMoved((int)touch, touchLocation.x, touchLocation.y, prevLocation.x, prevLocation.y);
+//        CGPoint prevLocation = [touch previousLocationInView:self];
+//        if(_scale != 1.0)
+//			prevLocation.x*=_scale;prevLocation.y*=_scale;
+        lw::touchMoved((int)touch, touchLocation.x, touchLocation.y);
 	}
 }
 
 // Handles the end of a touch event.
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	if ([touches count] != 1)
-		return;
+//	if ([touches count] != 1)
+//		return;
 	
 	for( UITouch *touch in touches )
 	{
-		// Grab the location of the touch
-		// look at start coords and finish coords and decide what action to set
 		CGPoint touchLocation = [touch locationInView:self];
 		if(_scale != 1.0)
 			touchLocation.x*=_scale;touchLocation.y*=_scale;
@@ -610,17 +608,14 @@
 		float Position[2] = { touchLocation.x, touchLocation.y };
 		m_pPVRShellInit->EndedTouch(Position, m_pPVRShellInit);
         
-        CGPoint prevLocation = [touch previousLocationInView:self];
-        if(_scale != 1.0)
-			prevLocation.x*=_scale;prevLocation.y*=_scale;
-        lw::touchEnded((int)touch, touchLocation.x, touchLocation.y, prevLocation.x, prevLocation.y);
+        lw::touchEnded((int)touch, touchLocation.x, touchLocation.y);
 	}
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if ([touches count] != 1)
-		return;
+//    if ([touches count] != 1)
+//		return;
 	
 	for( UITouch *touch in touches )
 	{
@@ -628,10 +623,7 @@
 		if(_scale != 1.0)
 			touchLocation.x*=_scale;touchLocation.y*=_scale;
         
-        CGPoint prevLocation = [touch previousLocationInView:self];
-        if(_scale != 1.0)
-			prevLocation.x*=_scale;prevLocation.y*=_scale;
-        lw::touchEnded((int)touch, touchLocation.x, touchLocation.y, prevLocation.x, prevLocation.y);
+        lw::touchEnded((int)touch, touchLocation.x, touchLocation.y);
 	}
 }
 

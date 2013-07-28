@@ -4,6 +4,7 @@
 #include "lwTexture.h"
 #include "lwMesh.h"
 #include "lwCamera.h"
+#include "lwRenderState.h"
 #include "lwLog.h"
 
 namespace lw {
@@ -275,8 +276,8 @@ namespace lw {
         }
         
         //enumerate attributes and uniforms
-        _program = _pEffects->getProgram(fxName);
-        if (_program == 0) {
+        int error = _pEffects->getProgramAndRenderStates(fxName, _program, _rsObjs);
+        if (error) {
             lwerror("invalid fxName: %s", fxName);
             return;
         }
@@ -456,24 +457,36 @@ namespace lw {
     void Material::draw(const lw::Mesh &mesh, const PVRTMat4 &matWorld, const lw::Camera &camera, bool useIndex) {
         glUseProgram(_program);
         
+        //attributes
         std::vector<MaterialInput*>::iterator it = _attribInputs.begin();
         std::vector<MaterialInput*>::iterator itend = _attribInputs.end();
         for (; it != itend; ++it) {
             (*it)->use(mesh, matWorld, camera);
         }
         
+        //uniforms
         it = _uniformInputs.begin();
         itend = _uniformInputs.end();
         for (; it != itend; ++it) {
             (*it)->use(mesh, matWorld, camera);
         }
         
+        //render states
+        std::vector<RsObj*>::const_iterator itrs = _rsObjs->begin();
+        std::vector<RsObj*>::const_iterator itrsend = _rsObjs->end();
+        for (; itrs != itrsend; ++itrs) {
+            (*itrs)->use();
+        }
+        rsFlush();
+        
+        //draw
         if (useIndex) {
             glDrawElements(GL_TRIANGLES, mesh.verticesCount, GL_UNSIGNED_SHORT, 0);
         } else {
             glDrawArrays(GL_TRIANGLES, 0, mesh.verticesCount);
         }
         
+        //unuse
         it = _attribInputs.begin();
         itend = _attribInputs.end();
         for (; it != itend; ++it) {

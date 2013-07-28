@@ -37,7 +37,7 @@ namespace lw {
         class Cleaner{
         public:
             Cleaner () {
-                lw::rsBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             }
             ~Cleaner() {
                 std::vector<Cmd*>::iterator it = _setCmds->begin();
@@ -55,17 +55,20 @@ namespace lw {
         Cleaner _cleaner;
         
         enum {
-            ENABLE_BLEND,
+            BLEND,
             BLEND_FUNC,
+            DEPTH_TEST,
+            DEPTH_MASK,
+            CULL_FACE,
         };
         
     }
     
     
-    
-    class CmdEnableBlend :public Cmd {
+    //===================================================
+    class CmdBlend :public Cmd {
     public:
-        CmdEnableBlend(bool b):Cmd(ENABLE_BLEND), _enable(b) {}
+        CmdBlend(bool b):Cmd(BLEND), _enable(b) {}
         
         virtual void set() {
             if (_enable) {
@@ -78,14 +81,17 @@ namespace lw {
         bool _enable;
     };
 
-
-    void rsEnableBlend() {
-        CmdEnableBlend *pCmd = new CmdEnableBlend(true);
+    void rsBlend(bool enable) {
+        if (!enable)
+            return;
+        CmdBlend *pCmd = new CmdBlend(true);
         pCmd->addTo(_setCmds);
-        CmdEnableBlend *pCmdReset = new CmdEnableBlend(false);
+        CmdBlend *pCmdReset = new CmdBlend(false);
         pCmdReset->addTo(_resetCmds);
     }
     
+    
+    //===================================================
     class CmdBlendFunc :public Cmd {
     public:
         CmdBlendFunc(GLenum sfactor, GLenum dfactor)
@@ -99,19 +105,95 @@ namespace lw {
     };
     
     void rsBlendFunc(GLenum sfactor, GLenum dfactor) {
-        if (sfactor == GL_SRC_ALPHA || dfactor == GL_ONE_MINUS_SRC_ALPHA) {
-            return;
-        }
+//        if (sfactor == GL_SRC_ALPHA || dfactor == GL_ONE_MINUS_SRC_ALPHA) {
+//            return;
+//        }
         CmdBlendFunc *pCmd = new CmdBlendFunc(sfactor, dfactor);
         pCmd->addTo(_setCmds);
         CmdBlendFunc *pCmdReset = new CmdBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         pCmdReset->addTo(_resetCmds);
     }
     
-    bool rsDirty() {
-        return !_setCmds->empty();
+    
+    //===================================================
+    class CmdDepthTest :public Cmd {
+    public:
+        CmdDepthTest(bool b):Cmd(DEPTH_TEST), _enable(b) {}
+        
+        virtual void set() {
+            if (_enable) {
+                glEnable(GL_DEPTH_TEST);
+            } else {
+                glDisable(GL_DEPTH_TEST);
+            }
+        }
+    private:
+        bool _enable;
+    };
+    
+    void rsDepthTest(bool enable) {
+        if (!enable)
+            return;
+        CmdDepthTest *pCmd = new CmdDepthTest(true);
+        pCmd->addTo(_setCmds);
+        CmdDepthTest *pCmdReset = new CmdDepthTest(false);
+        pCmdReset->addTo(_resetCmds);
     }
     
+    
+    //===================================================
+    class CmdDepthMask :public Cmd {
+    public:
+        CmdDepthMask(bool b):Cmd(DEPTH_MASK), _enable(b) {}
+        
+        virtual void set() {
+            if (_enable) {
+                glDepthMask(GL_TRUE);
+            } else {
+                glDepthMask(GL_FALSE);
+            }
+        }
+    private:
+        bool _enable;
+    };
+    
+    void rsDepthMask(bool enable) {
+        if (!enable)
+            return;
+        CmdDepthMask *pCmd = new CmdDepthMask(true);
+        pCmd->addTo(_setCmds);
+        CmdDepthMask *pCmdReset = new CmdDepthMask(false);
+        pCmdReset->addTo(_resetCmds);
+    }
+    
+    
+    //===================================================
+    class CmdCullFace :public Cmd {
+    public:
+        CmdCullFace(bool b):Cmd(CULL_FACE), _enable(b) {}
+        
+        virtual void set() {
+            if (_enable) {
+                glEnable(GL_CULL_FACE);
+            } else {
+                glDisable(GL_CULL_FACE);
+            }
+        }
+    private:
+        bool _enable;
+    };
+    
+    void rsCullFace(bool enable) {
+        if (!enable)
+            return;
+        CmdCullFace *pCmd = new CmdCullFace(true);
+        pCmd->addTo(_setCmds);
+        CmdCullFace *pCmdReset = new CmdCullFace(false);
+        pCmdReset->addTo(_resetCmds);
+    }
+    
+    
+    //===================================================
     void rsFlush() {
         std::vector<Cmd*>::iterator it = _setCmds->begin();
         std::vector<Cmd*>::iterator itend = _setCmds->end();
@@ -124,5 +206,49 @@ namespace lw {
         _resetCmds = other;
     }
 
-}
+    //======================================
+    //RsObjBlend
+    RsObjBlend::RsObjBlend(bool enable)
+    :_enable(enable) {
+    }
+    
+    void RsObjBlend::use() {
+        rsBlend(_enable);
+    }
 
+    //RsObjBlendFunc
+    RsObjBlendFunc::RsObjBlendFunc(GLenum sfactor, GLenum dfactor)
+    :_sfactor(sfactor), _dfactor(dfactor){
+    }
+    
+    void RsObjBlendFunc::use() {
+        rsBlendFunc(_sfactor, _dfactor);
+    }
+    
+    //RsObjDepthTest
+    RsObjDepthTest::RsObjDepthTest(bool enable)
+    :_enable(enable) {
+    }
+    
+    void RsObjDepthTest::use() {
+        rsDepthTest(_enable);
+    }
+    
+    //RsObjDepthMask
+    RsObjDepthMask::RsObjDepthMask(bool enable)
+    :_enable(enable) {
+    }
+    
+    void RsObjDepthMask::use() {
+        rsDepthMask(_enable);
+    }
+    
+    //RsObjCullFace
+    RsObjCullFace::RsObjCullFace(bool enable)
+    :_enable(enable) {
+    }
+    
+    void RsObjCullFace::use() {
+        rsCullFace(_enable);
+    }
+}

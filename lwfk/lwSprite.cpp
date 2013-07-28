@@ -73,9 +73,6 @@ namespace lw {
             return;
         }
         
-//        glEnable(GL_BLEND);
-//        glBlendFunc(GL_ONE, GL_ONE);
-        
         //setup mesh
         char* p0 = (char*)&_vertices[0];
         this->position.set(sizeof(SpriteVertex), p0);
@@ -173,12 +170,12 @@ namespace lw {
                 lwerror("Material::create failed: sprite.lwfx, %s", fxName);
                 return -1;
             }
-            _pTexture = _pMaterial->setTexture("input_texture", textureFile, 0);
-            if (_pTexture == NULL) {
-                lwerror("_pMaterial->setTexture failed: %s", textureFile);
-                return -1;
-            }
             _resMgr.add(_materialKey.c_str(), _pMaterial);
+        }
+        _pTexture = _pMaterial->setTexture("input_texture", textureFile, 0);
+        if (_pTexture == NULL) {
+            lwerror("_pMaterial->setTexture failed: %s", textureFile);
+            return -1;
         }
         uvInit();
         

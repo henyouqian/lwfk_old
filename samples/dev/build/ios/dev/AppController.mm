@@ -176,6 +176,7 @@ const int kFPS = 60.0;
 		// check for failure and reduce features of view requested until no failure or complete failure
 		if(_glView)
 		{
+            _glView.multipleTouchEnabled = TRUE;
 			break;	// success!!!
 		}
 		else

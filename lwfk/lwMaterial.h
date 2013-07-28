@@ -12,6 +12,7 @@ namespace lw {
     class Camera;
     class MaterialInput;
     class TextureRes;
+    class RsObj;
     
     class Material : public Res {
     public:
@@ -32,6 +33,7 @@ namespace lw {
         
         EffectsRes *_pEffects;
         GLuint _program;
+        const std::vector<RsObj*> *_rsObjs;
         std::vector<MaterialInput*> _attribInputs;
         std::vector<MaterialInput*> _uniformInputs;
     };

@@ -25,8 +25,21 @@
         }
     </fs>
     <fx name="normal" vs="vs" fs="fs">
-        <glDepthMask value="GL_TRUE"/>
-        <glDisable value="GL_BLEND"/>
+        <rsBlend enable="true"/>
+        <rsBlendFunc src="GL_SRC_ALPHA" dst="GL_ONE_MINUS_SRC_ALPHA"/>
+        <rsDepthTest enable="false"/>
+    </fx>
+    
+    <fx name="normal" vs="vs" fs="fs">
+        <rsBlend enable="true"/>
+        <rsBlendFunc src="GL_SRC_ALPHA" dst="GL_ONE_MINUS_SRC_ALPHA"/>
+        <rsDepthTest enable="false"/>
+    </fx>
+    
+    <fx name="add" vs="vs" fs="fs">
+        <rsBlend enable="true"/>
+        <rsBlendFunc src="GL_SRC_ALPHA" dst="GL_ONE"/>
+        <rsDepthTest enable="false"/>
     </fx>
 
 </lwfx>

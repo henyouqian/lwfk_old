@@ -4,6 +4,7 @@
 #include "libraries/tinyxml2/tinyxml2.h"
 #include "lwLog.h"
 #include "PVRTResourceFile.h"
+#include "lwRenderState.h"
 
 namespace lw {
 
@@ -54,6 +55,35 @@ namespace lw {
             GLuint shader;
         };
         
+        std::map<std::string, GLenum> _blendFactorMap;
+        
+        GLenum getBlendFactor(const char *str) {
+            assert(str);
+            if ( _blendFactorMap.empty()) {
+                _blendFactorMap["GL_ZERO"] = GL_ZERO;
+                _blendFactorMap["GL_ONE"] = GL_ONE;
+                _blendFactorMap["GL_SRC_COLOR"] = GL_SRC_COLOR;
+                _blendFactorMap["GL_ONE_MINUS_SRC_COLOR"] = GL_ONE_MINUS_SRC_COLOR;
+                _blendFactorMap["GL_DST_COLOR"] = GL_DST_COLOR;
+                _blendFactorMap["GL_ONE_MINUS_DST_COLOR"] = GL_ONE_MINUS_DST_COLOR;
+                _blendFactorMap["GL_SRC_ALPHA"] = GL_SRC_ALPHA;
+                _blendFactorMap["GL_ONE_MINUS_SRC_ALPHA"] = GL_ONE_MINUS_SRC_ALPHA;
+                _blendFactorMap["GL_DST_ALPHA"] = GL_DST_ALPHA;
+                _blendFactorMap["GL_ONE_MINUS_DST_ALPHA"] = GL_ONE_MINUS_DST_ALPHA;
+                _blendFactorMap["GL_CONSTANT_COLOR"] = GL_CONSTANT_COLOR;
+                _blendFactorMap["GL_ONE_MINUS_CONSTANT_COLOR"] = GL_ONE_MINUS_CONSTANT_COLOR;
+                _blendFactorMap["GL_CONSTANT_ALPHA"] = GL_CONSTANT_ALPHA;
+                _blendFactorMap["GL_ONE_MINUS_CONSTANT_ALPHA"] = GL_ONE_MINUS_CONSTANT_ALPHA;
+                _blendFactorMap["GL_SRC_ALPHA_SATURATE"] = GL_SRC_ALPHA_SATURATE;
+            }
+            std::map<std::string, GLenum>::iterator it = _blendFactorMap.find(str);
+            if (it == _blendFactorMap.end()) {
+                lwerror("blend factor not found: %s", str);
+                return GL_ZERO;
+            }
+            return it->second;
+        }
+        
     } //namespace
     
     //==========================================
@@ -65,6 +95,7 @@ namespace lw {
     public:
         std::string name;
         GLuint program;
+        std::vector<RsObj*> rsObjs;
         bool ok;
     };
     
@@ -111,12 +142,66 @@ namespace lw {
         glDetachShader(program, pVtxNameShader->shader);
         glDetachShader(program, pFragNameShader->shader);
         
+        //render states
+        const tinyxml2::XMLElement *pElemRS = pElemFx->FirstChildElement();
+        while (pElemRS) {
+            if (strcmp(pElemRS->Name(), "rsBlend") == 0) {
+                bool enable = false;
+                if (pElemRS->QueryAttribute("enable", &enable)) {
+                    lwerror("<rsBlend enable> attribute error");
+                } else {
+                    RsObjBlend *rsobj = new RsObjBlend(enable);
+                    rsObjs.push_back(rsobj);
+                }
+            } else if (strcmp(pElemRS->Name(), "rsBlendFunc") == 0) {
+                const char *src = pElemRS->Attribute("src");
+                const char *dst = pElemRS->Attribute("dst");
+                if (src && dst) {
+                    RsObjBlendFunc *rsobj = new RsObjBlendFunc(getBlendFactor(src), getBlendFactor(dst));
+                    rsObjs.push_back(rsobj);
+                } else {
+                    lwerror("<rsBlendFunc src, dst> attribute error");
+                }
+            } else if (strcmp(pElemRS->Name(), "rsDepthTest") == 0) {
+                bool enable = false;
+                if (pElemRS->QueryAttribute("enable", &enable)) {
+                    lwerror("<rsDepthTest enable> attribute error");
+                } else {
+                    RsObjDepthTest *rsobj = new RsObjDepthTest(enable);
+                    rsObjs.push_back(rsobj);
+                }
+            } else if (strcmp(pElemRS->Name(), "rsDepthMask") == 0) {
+                bool enable = false;
+                if (pElemRS->QueryAttribute("enable", &enable)) {
+                    lwerror("<rsDepthMask enable> attribute error");
+                } else {
+                    RsObjDepthMask *rsobj = new RsObjDepthMask(enable);
+                    rsObjs.push_back(rsobj);
+                }
+            } else if (strcmp(pElemRS->Name(), "rsCullFace") == 0) {
+                bool enable = false;
+                if (pElemRS->QueryAttribute("enable", &enable)) {
+                    lwerror("<rsCullFace enable> attribute error");
+                } else {
+                    RsObjCullFace *rsobj = new RsObjCullFace(enable);
+                    rsObjs.push_back(rsobj);
+                }
+            }
+            pElemRS = pElemRS->NextSiblingElement();
+        }
+        
         ok = true;
     }
     
     EffectFx::~EffectFx() {
         if (program)
             glDeleteProgram(program);
+        
+        std::vector<RsObj*>::iterator it = rsObjs.begin();
+        std::vector<RsObj*>::iterator itend = rsObjs.end();
+        for (; it != itend; ++it) {
+            delete (*it);
+        }
     }
     
     
@@ -227,7 +312,6 @@ namespace lw {
     
     GLuint EffectsRes::getProgram(const char *fxName) {
         assert(fxName);
-        
         std::vector<EffectFx*>::iterator it = _fxs.begin();
         std::vector<EffectFx*>::iterator itend = _fxs.end();
         for (;it != itend; ++it) {
@@ -235,8 +319,21 @@ namespace lw {
                 return (*it)->program;
             }
         }
-        
         return 0;
+    }
+    
+    int EffectsRes::getProgramAndRenderStates(const char *fxName, GLuint &program, const std::vector<RsObj*> *&renderStates ) {
+        assert(fxName);
+        std::vector<EffectFx*>::iterator it = _fxs.begin();
+        std::vector<EffectFx*>::iterator itend = _fxs.end();
+        for (;it != itend; ++it) {
+            if ((*it)->name.compare(fxName) == 0) {
+                program = (*it)->program;
+                renderStates = &((*it)->rsObjs);
+                return 0;
+            }
+        }
+        return -1;
     }
 
     

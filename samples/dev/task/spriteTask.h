@@ -26,7 +26,7 @@ private:
     void vTouchEnded(const lw::Touch &touch);
     void vTouchCanceled(const lw::Touch &touch);
     
-    lw::Sprite *_pSprite;
+    lw::Sprite *_pSprite, *_pSprite1;
     lw::Model *_pModel;
     lw::Camera *_pCamera;
     

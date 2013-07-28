@@ -7,6 +7,7 @@ namespace lw
 {
     
     class EffectFx;
+    class RsObj;
     
     class EffectsRes : public Res
     {
@@ -30,6 +31,8 @@ namespace lw
         
         static EffectsRes* create(const char *file);
         GLuint getProgram(const char *fxName);
+        int getProgramAndRenderStates(const char *fxName, GLuint &program, const std::vector<RsObj*> *&renderStates );
+        
         
     private:
         EffectsRes(const char *file, bool &ok);

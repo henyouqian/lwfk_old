@@ -25,7 +25,7 @@ namespace lw{
         }
     }
     
-    void touchMoved(int key, float x, float y, float prevX, float prevY) {
+    void touchMoved(int key, float x, float y) {
         std::map<int, Touch>::iterator it = _touchMap.find(key);
         if (it != _touchMap.end()) {
             float prevX = it->second.x;
@@ -35,7 +35,7 @@ namespace lw{
         }
     }
     
-    void touchEnded(int key, float x, float y, float prevX, float prevY) {
+    void touchEnded(int key, float x, float y) {
         std::map<int, Touch>::iterator it = _touchMap.find(key);
         if (it != _touchMap.end()) {
             Task::touchEnded(it->second);
@@ -43,7 +43,7 @@ namespace lw{
         }
     }
     
-    void touchCanceled(int key, float x, float y, float prevX, float prevY) {
+    void touchCanceled(int key, float x, float y) {
         std::map<int, Touch>::iterator it = _touchMap.find(key);
         if (it != _touchMap.end()) {
             Task::touchCanceled(it->second);
