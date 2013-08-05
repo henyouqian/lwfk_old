@@ -2,7 +2,8 @@
 #define __SLIDER_TASK_H__
 
 #include "lwfk/lwTask.h"
-#include "lwfk/lwSprite.h"
+
+class SliderGame;
 
 class SliderTask: public lw::Task
 {
@@ -21,7 +22,8 @@ private:
     void vTouchEnded(const lw::Touch &touch);
     void vTouchCanceled(const lw::Touch &touch);
     
-    lw::Sprite *_pSprite;
+    SliderGame *_pSliderGame;
+    std::vector<std::string> _fileNames;
 };
 
 extern SliderTask gSliderTask;

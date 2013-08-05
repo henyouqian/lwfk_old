@@ -468,15 +468,13 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event)
 		int key = AMotionEvent_getPointerId(event, pointIndex);
 		float x = AMotionEvent_getX(event, pointIndex);
 		float y = AMotionEvent_getY(event, pointIndex);
-		float prevX = AMotionEvent_getHistoricalX(event, pointIndex, 1);
-		float prevY = AMotionEvent_getHistoricalY(event, pointIndex, 1);
 
 		if (action == AMOTION_EVENT_ACTION_DOWN || action == AMOTION_EVENT_ACTION_POINTER_DOWN) {
 			lw::touchBegan(key, x, y);
 		} else if (action == AMOTION_EVENT_ACTION_UP || action == AMOTION_EVENT_ACTION_POINTER_UP) {
-			lw::touchEnded(key, x, y, prevX, prevY);
+			lw::touchEnded(key, x, y);
 		} else if (action == AMOTION_EVENT_ACTION_CANCEL) {
-			lw::touchCanceled(key, x, y, prevX, prevY);
+			lw::touchCanceled(key, x, y);
 		} else if (action == AMOTION_EVENT_ACTION_MOVE) {
 			int pointerCount = AMotionEvent_getPointerCount(event);
 			for (int i = 0; i < pointerCount; ++i) {
@@ -488,7 +486,7 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event)
 				lw::Touch *pTouch = lw::findTouch(key);
 				if (pTouch) {
 					if (pTouch->x != x || pTouch->y != y) {
-						lw::touchMoved(key, x, y, prevX, prevY);
+						lw::touchMoved(key, x, y);
 					}
 				}
 			}

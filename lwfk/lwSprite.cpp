@@ -9,22 +9,25 @@
 #include "lwLog.h"
 #include "tinyxml2/tinyxml2.h"
 #include "lwfk/lwCamera.h"
+#include "PVR/tools/PVRTResourceFile.h"
+#include <dirent.h>
+#include <string.h>
 
 
 namespace lw {
     
     namespace {
-        struct AtlasInfo{
+        struct AtlasInfo {
             std::string file;
             int u, v, w, h;
         };
         std::map<std::string, AtlasInfo> _atlasMap;
-        KeyResMgr _resMgr;
+        KeyResMgr _materialResMgr;
     }
     
     Camera _camera;
     
-    class SpriteVertexBuffer: public Mesh{
+    class SpriteVertexBuffer: public Mesh {
     public:
         SpriteVertexBuffer();
         ~SpriteVertexBuffer();
@@ -32,7 +35,7 @@ namespace lw {
         void collectVetices(SpriteVertex *vertices, int numVertices, Material *pMaterial);
         void flush();
         
-        enum{
+        enum {
             VERTICIS_NUM_RESERVE = 8192,
             VERTICIS_NUM_LIMIT = 65536,
         };
@@ -47,12 +50,12 @@ namespace lw {
         int _samplerLocation;
     };
     
-    SpriteVertexBuffer::SpriteVertexBuffer(){
+    SpriteVertexBuffer::SpriteVertexBuffer() {
         _vertices.reserve(VERTICIS_NUM_RESERVE);
         _pCurrMaterial = NULL;
     }
     
-    SpriteVertexBuffer::~SpriteVertexBuffer(){
+    SpriteVertexBuffer::~SpriteVertexBuffer() {
         
     }
     
@@ -68,8 +71,8 @@ namespace lw {
         }
     }
     
-    void SpriteVertexBuffer::flush(){
-        if ( _vertices.empty() ){
+    void SpriteVertexBuffer::flush() {
+        if (_vertices.empty()) {
             return;
         }
         
@@ -91,14 +94,14 @@ namespace lw {
     
     
     //====================================================
-	Sprite* Sprite::createFromFile(const char* textureFile, const char* fxName){
+	Sprite* Sprite::createFromFile(const char* textureFile, const char* fxName) {
         assert(textureFile && fxName);
         bool ok = false;
         Sprite* p = new Sprite(textureFile, fxName, false, ok);
-        if ( p ){
-            if ( ok ){
+        if (p) {
+            if (ok) {
                 return p;
-            }else{
+            } else {
                 delete p;
                 return NULL;
             }
@@ -106,13 +109,13 @@ namespace lw {
         return NULL;
     }
     
-    Sprite* Sprite::createFromAtlas(const char* key, const char* fxName){
+    Sprite* Sprite::createFromAtlas(const char* key, const char* fxName) {
         bool ok = false;
         Sprite* p = new Sprite(key, fxName, true, ok);
-        if ( p ){
-            if ( ok ){
+        if (p){
+            if (ok) {
                 return p;
-            }else{
+            } else {
                 delete p;
                 return NULL;
             }
@@ -120,8 +123,8 @@ namespace lw {
         return NULL;
     }
     
-    namespace{
-        void makeFileName2x(std::string& name){
+    namespace {
+        void makeFileName2x(std::string& name) {
             int n = name.find('.');
             std::string ext = &name[n];
             name.resize(n);
@@ -130,7 +133,7 @@ namespace lw {
         }
     }
     
-    Sprite::Sprite(const char *textureFile, const char *fxName, bool fromAtlas, bool &ok){
+    Sprite::Sprite(const char *textureFile, const char *fxName, bool fromAtlas, bool &ok) {
         ok = false;
         _ancX = _ancY = 0.f;
         _posX = _posY = 0.f;
@@ -141,8 +144,8 @@ namespace lw {
         _z = 0.f;
         
         int err = 0;
-        if ( fromAtlas ){
-            err = loadFromAtlas(textureFile);
+        if (fromAtlas) {
+            err = loadFromAtlas(textureFile, fxName);
         }else{
             err = loadFromFile(textureFile, fxName);
         }
@@ -150,27 +153,27 @@ namespace lw {
         ok = !err;
     }
     
-    Sprite::~Sprite(){
+    Sprite::~Sprite() {
         if (_pMaterial && _pMaterial->release() == 0) {
-            _resMgr.del(_materialKey.c_str());
+            _materialResMgr.del(_materialKey.c_str());
         }
     }
     
-    int Sprite::loadFromFile(const char *textureFile, const char *fxName){
+    int Sprite::loadFromFile(const char *textureFile, const char *fxName) {
         assert(textureFile && fxName);
         
         _materialKey = fxName;
         _materialKey.append("/");
         _materialKey.append(textureFile);
         
-        _pMaterial = (Material*)_resMgr.get(_materialKey.c_str());
+        _pMaterial = (Material*)_materialResMgr.get(_materialKey.c_str());
         if (_pMaterial == NULL) {
             _pMaterial = Material::create("sprite.lwfx", fxName);
             if (_pMaterial == NULL) {
                 lwerror("Material::create failed: sprite.lwfx, %s", fxName);
                 return -1;
             }
-            _resMgr.add(_materialKey.c_str(), _pMaterial);
+            _materialResMgr.add(_materialKey.c_str(), _pMaterial);
         }
         _pTexture = _pMaterial->setTexture("input_texture", textureFile, 0);
         if (_pTexture == NULL) {
@@ -182,19 +185,24 @@ namespace lw {
         return 0;
     }
     
-    int Sprite::loadFromAtlas(const char *key){
-//        std::map<std::string, AtlasInfo>::iterator it = _atlasMap.find(key);
-//        if ( it != _atlasMap.end() ){
-//            AtlasInfo& atlas = it->second;
-////            _pTextureRes = TextureRes::create(atlas.file.c_str());
-//            if ( _pTextureRes ){
-//                setUV(atlas.u, atlas.v, atlas.w, atlas.h);
-//            }
-//        }
+    int Sprite::loadFromAtlas(const char *key, const char *fxName) {
+        assert(key && fxName);
+        
+        std::map<std::string, AtlasInfo>::iterator it = _atlasMap.find(key);
+        if (it != _atlasMap.end()) {
+            AtlasInfo& atlas = it->second;
+            int err = loadFromFile(atlas.file.c_str(), fxName);
+            if (err) {
+                lwerror("loadFromFile error");
+                return -1;
+            }
+            setUV(atlas.u, atlas.v, atlas.w, atlas.h);
+            return 0;
+        }
         return -1;
     }
     
-    void Sprite::setUV(float u, float v, float w, float h){
+    void Sprite::setUV(float u, float v, float w, float h) {
         float texW = (float)_pTexture->getWidth();
         float texH = (float)_pTexture->getHeight();
         
@@ -209,7 +217,7 @@ namespace lw {
 		_v2 = (v+_h)/texH;
     }
     
-    void Sprite::uvInit(){
+    void Sprite::uvInit() {
         _u = _v = 0.f;
         _w = (float)_pTexture->getWidth();
         _h = (float)_pTexture->getHeight();
@@ -217,67 +225,67 @@ namespace lw {
         _u2 = _v2 = 1.f;
     }
     
-    void Sprite::getUV(float &u, float &v, float &w, float &h){
+    void Sprite::getUV(float &u, float &v, float &w, float &h) {
         u = _u; v = _v; w = _w; h = _h;
     }
     
-    void Sprite::setAnchor(float x, float y){
-        if ( x != _ancX || y != _ancY ){
+    void Sprite::setAnchor(float x, float y) {
+        if (x != _ancX || y != _ancY) {
             _ancX = x; _ancY = y;
             _needUpdate = true;
         }
     }
     
-    void Sprite::getAnchor(float &x, float &y){
+    void Sprite::getAnchor(float &x, float &y) {
         x = _ancX; y = _ancY;
     }
     
-    void Sprite::setPos(float x, float y){
-        if ( x != _posX || y != _posY ){
+    void Sprite::setPos(float x, float y) {
+        if (x != _posX || y != _posY) {
             _posX = x;
             _posY = y;
             _needUpdate = true;
         }
     }
     
-    void Sprite::getPos(float &x, float &y){
+    void Sprite::getPos(float &x, float &y) {
         x = _posX;
         y = _posY;
     }
     
-    void Sprite::setRotate(float r){
-        if ( _rotate != r ){
+    void Sprite::setRotate(float r) {
+        if (_rotate != r) {
             _rotate = r;
             _needUpdate = true;
         }
     }
     
-    float Sprite::getRotate(){
+    float Sprite::getRotate() {
         return _rotate;
     }
     
-    void Sprite::setScale(float x, float y){
-        if ( _scaleX != x || _scaleY != y ){
+    void Sprite::setScale(float x, float y) {
+        if (_scaleX != x || _scaleY != y) {
             _scaleX = x;
             _scaleY = y;
             _needUpdate = true;
         }
     }
     
-    void Sprite::getScale(float &x, float &y){
+    void Sprite::getScale(float &x, float &y) {
         x = _scaleX; y = _scaleY;
     }
     
-    void Sprite::setSize(float w, float h){
+    void Sprite::setSize(float w, float h) {
         setScale(w/_w, h/_h);
     }
     
-    void Sprite::getSize(float &w, float &h){
+    void Sprite::getSize(float &w, float &h) {
         w = _w*_scaleX;
         h = _h*_scaleY;
     }
     
-    void Sprite::setColor(const Color& color){
+    void Sprite::setColor(const Color& color) {
         _color = color;
     }
     
@@ -297,8 +305,8 @@ namespace lw {
         sv.a = color.a;
     }
     
-    void Sprite::draw(){
-        if ( _needUpdate ){
+    void Sprite::draw() {
+        if (_needUpdate) {
             update();
         }
         
@@ -324,7 +332,7 @@ namespace lw {
         _pvb->collectVetices(v, 6, _pMaterial);
     }
     
-    void Sprite::update(){
+    void Sprite::update() {
         _needUpdate = false;
         PVRTMat4 m, m1;
         m = PVRTMat4::Identity();
@@ -333,11 +341,11 @@ namespace lw {
             m1 = PVRTMat4::Translation(_posX, _posY, 0.f);
             m = m * m1;
         }
-		if ( _rotate != 0.f ){
+		if (_rotate != 0.f) {
 			m1 = PVRTMat4::RotationZ(_rotate);
 			m = m * m1;
 		}
-		if ( _scaleX != 1.f || _scaleY != 1.f ){
+		if (_scaleX != 1.f || _scaleY != 1.f) {
             m1 = PVRTMat4::Scale(_scaleX, _scaleY, 1.f);
 			m = m * m1;
 		}
@@ -383,44 +391,71 @@ namespace lw {
 
     
     //===============================================
+    void loadAtlasConf();
     
-    void Sprite::init(){
+    void Sprite::init() {
         _pvb = new SpriteVertexBuffer();
         
         PVRTVec2 screenSize = getScreenSize();
         _camera.lookat(PVRTVec3(0.f, 0.f, 100.f), PVRTVec3(0.f, 0.f, 0.f), PVRTVec3(0.f, 1.f, 0.f));
         _camera.ortho(screenSize.x, screenSize.y, 0, 200.f);
+        
+        loadAtlasConf();
     }
     
-    void Sprite::quit(){
-        if ( _pvb ){
+    void Sprite::quit() {
+        if (_pvb) {
             delete _pvb;
             _pvb = NULL;
         }
     }
     
-    void Sprite::flush(){
+    void Sprite::flush() {
         _pvb->flush();
     }
     
     
-    void Sprite::addAtlas(const char *file){
-//        tinyxml2::XMLDocument doc;
-//        doc.LoadFile(_f(file));
-//        const tinyxml2::XMLElement *pElem = doc.RootElement();
-//        pElem = pElem->FirstChildElement("image");
-//        while ( pElem ){
-//            const char *name = pElem->Attribute("name");
-//            AtlasInfo atlas;
-//            atlas.file = pElem->Attribute("file");
-//            pElem->QueryIntAttribute("x", &atlas.u);
-//            pElem->QueryIntAttribute("y", &atlas.v);
-//            pElem->QueryIntAttribute("w", &atlas.w);
-//            pElem->QueryIntAttribute("h", &atlas.h);
-//            _atlasMap[name] = atlas;
-//            
-//            pElem = pElem->NextSiblingElement();
-//        }
+    void addAtlas(const char *file) {
+        assert(file);
+        tinyxml2::XMLDocument doc;
+        CPVRTResourceFile resFile(file);
+        if (resFile.IsOpen()) {
+            tinyxml2::XMLError err = doc.Parse((const char*)resFile.DataPtr(), resFile.Size());
+            assert(err == tinyxml2::XML_SUCCESS);
+            const tinyxml2::XMLElement *pElem = doc.RootElement();
+            pElem = pElem->FirstChildElement("image");
+            while ( pElem ){
+                const char *name = pElem->Attribute("name");
+                AtlasInfo atlas;
+                atlas.file = pElem->Attribute("file");
+                pElem->QueryIntAttribute("x", &atlas.u);
+                pElem->QueryIntAttribute("y", &atlas.v);
+                pElem->QueryIntAttribute("w", &atlas.w);
+                pElem->QueryIntAttribute("h", &atlas.h);
+                _atlasMap[name] = atlas;
+                
+                pElem = pElem->NextSiblingElement();
+            }
+        } else {
+            lwerror("file open error: %s", file);
+        }
+    }
+    
+    void loadAtlasConf() {
+        const char * path = CPVRTResourceFile::GetReadPath().c_str();
+        DIR *pDir = opendir(path);
+        struct dirent *pDirent;
+        while (1) {
+            pDirent = readdir(pDir);
+            if (pDirent == NULL)
+                break;
+            const char *p = strrchr(pDirent->d_name, '.');
+            if (p && strcmp(p, ".atlas") == 0) {
+                addAtlas(pDirent->d_name);
+                lwinfo("%s", pDirent->d_name);
+            }
+        }
+        closedir(pDir);
     }
     
 } //namespace lw

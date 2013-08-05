@@ -6,11 +6,12 @@ namespace lw {
     void rsBlend(bool enable);   //default: false
     void rsBlendFunc(GLenum src, GLenum dst);   //default: sfactor=GL_SRC_ALPHA, dfactor=GL_ONE_MINUS_SRC_ALPHA
     void rsDepthTest(bool enable);  //default: false
-    void rsDepthMask(bool enable);  //default: false
+    void rsDepthMask(bool enable);  //default: true
     void rsCullFace(bool enable);   //default: false
     
     
     void rsFlush();
+    void rsInit();
     
     class RsObj {
     public:

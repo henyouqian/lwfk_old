@@ -14,5 +14,6 @@
 
 #ifdef __cplusplus
     #include "lwfk/lwPrefix.h"
+    #include <unistd.h>
 #endif
 

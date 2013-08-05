@@ -292,6 +292,7 @@ namespace lw {
                               &name_len, &num, &type, name );
             name[name_len] = 0;
             GLuint location = glGetAttribLocation(_program, name);
+            lwinfo("program=%u, location=%u", _program, location);
             MaterialInput *pInput = NULL;
             
             if (strcmp(name, "_position") == 0) {
@@ -440,7 +441,7 @@ namespace lw {
     TextureRes* Material::setTexture(const char *inputName, const char *textureFile, GLint unit) {
         int location = glGetUniformLocation(_program, inputName);
         if (location == -1) {
-            lwerror("wrong input name: %s", inputName);
+            lwerror("wrong input name: %s, %u", inputName, location);
             return NULL;
         }
         
@@ -455,6 +456,15 @@ namespace lw {
     }
     
     void Material::draw(const lw::Mesh &mesh, const PVRTMat4 &matWorld, const lw::Camera &camera, bool useIndex) {
+        //render states
+        std::vector<RsObj*>::const_iterator itrs = _rsObjs->begin();
+        std::vector<RsObj*>::const_iterator itrsend = _rsObjs->end();
+        for (; itrs != itrsend; ++itrs) {
+            (*itrs)->use();
+        }
+        rsFlush();
+        
+        //use program
         glUseProgram(_program);
         
         //attributes
@@ -470,14 +480,6 @@ namespace lw {
         for (; it != itend; ++it) {
             (*it)->use(mesh, matWorld, camera);
         }
-        
-        //render states
-        std::vector<RsObj*>::const_iterator itrs = _rsObjs->begin();
-        std::vector<RsObj*>::const_iterator itrsend = _rsObjs->end();
-        for (; itrs != itrsend; ++itrs) {
-            (*itrs)->use();
-        }
-        rsFlush();
         
         //draw
         if (useIndex) {

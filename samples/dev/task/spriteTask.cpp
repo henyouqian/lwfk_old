@@ -8,14 +8,28 @@
 #include "lwfk/lwModel.h"
 #include "lwfk/lwCamera.h"
 #include "lwfk/lwRenderState.h"
+#include "lwfk/lwThread.h"
 
 #include <math.h>
 
+class TestThread : public lw::Thread {
+private:
+    virtual void vMain() {
+        while (1) {
+            sleep(1);
+            lwinfo("in thread");
+        }
+    }
+};
+
+namespace {
+    TestThread *_pThr;
+}
 
 SpriteTask gSpriteTask;
 
 SpriteTask::SpriteTask() {
-    
+    lwinfo("SpriteTask::SpriteTask()");
 }
 
 
@@ -25,8 +39,9 @@ SpriteTask::~SpriteTask() {
 
 
 void SpriteTask::vStart() {
-    _pSprite = lw::Sprite::createFromFile("img05.png", "normal");
-    _pSprite->setUV(0.f, 0.f, 256.f, 256.f);
+    lwinfo("SpriteTask::vStart()");
+    _pSprite = lw::Sprite::createFromFile("btn_play_down.png", "normal");
+//    _pSprite->setUV(0.f, 0.f, 256.f, 256.f);
     
     _pSprite1 = lw::Sprite::createFromFile("img05.png", "add");
     _pSprite1->setUV(0.f, 0.f, 256.f, 256.f);
@@ -35,14 +50,19 @@ void SpriteTask::vStart() {
     _pCamera = new lw::Camera();
     lw::Camera::setCurrent(_pCamera);
     _pCamera->perspective(PVRT_PIf/3.f, 9.0f/16.0f, 1, 1000);
+    
+    
+    _pThr = new TestThread();
 }
 
 
 void SpriteTask::vStop() {
+    lwinfo("SpriteTask::vStop()");
     delete _pSprite;
     delete _pSprite1;
     delete _pModel;
     delete _pCamera;
+    delete _pThr;
 }
 
 
@@ -57,13 +77,13 @@ void SpriteTask::vUpdate() {
 
 
 void SpriteTask::vDraw() {
-    glClearColor(1.f, 0.f, 1.f, 1.0f);
+    glClearColor(0.31f, 0.69f, 0.61f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     static float t = 0;
     t += .1f;
     
-//    glEnable(GL_CULL_FACE);
+//    glDisable(GL_CULL_FACE);
 //    glEnable(GL_DEPTH_TEST);
 //    glDepthMask(GL_TRUE);
 //    glDepthFunc(GL_LESS);
@@ -71,13 +91,16 @@ void SpriteTask::vDraw() {
     
     _pModel->draw(*_pCamera);
     
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    glDisable(GL_BLEND);
+//    glEnable(GL_BLEND);
     
     _pSprite->setAnchor(0, 0);
     _pSprite->setAnchor(128, 128);
     _pSprite->setPos(sinf(t)*100.f+100.f, 128);
     _pSprite->setRotate(0);
     _pSprite->setScale(1.f, 1.f);
-    _pSprite->setColor(lw::Color(1.f, 1.f, 1.f, .3f));
+    _pSprite->setColor(lw::Color(1.f, 1.f, 1.f, .8f));
 //    lw::rsBlend(true);
 //    lw::rsBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //    lw::rsFlush();
@@ -85,7 +108,6 @@ void SpriteTask::vDraw() {
 //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     _pSprite->draw();
-//    _pSprite->flush();
     
     _pSprite1->setAnchor(128, 128);
     _pSprite1->setPos(640-256, 1136-256);
@@ -93,15 +115,15 @@ void SpriteTask::vDraw() {
     float s = sinf(t*.3f)*.5+1.f;
     _pSprite1->setScale(s, s);
     _pSprite1->setColor(lw::Color(1.f, 1.f, 0.f, s-.5f));
-//    lw::rsBlend(true);
-//    lw::rsBlendFunc(GL_SRC_ALPHA, GL_ONE);
-//    lw::rsFlush();
+////    lw::rsBlend(true);
+////    lw::rsBlendFunc(GL_SRC_ALPHA, GL_ONE);
+////    lw::rsFlush();
     _pSprite1->draw();
 }
 
 void SpriteTask::vTouchBegan(const lw::Touch &touch) {
-//    stop();
-//    gSliderTask.start();
+    stop();
+    gSliderTask.start();
     lwinfo("vTouchBegan:%f, %f", touch.x, touch.y);
 }
 

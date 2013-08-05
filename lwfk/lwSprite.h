@@ -55,15 +55,13 @@ namespace lw{
         
         Sprite(const char *textureFile, const char *fxName, bool fromAtlas, bool &ok);
         int loadFromFile(const char* textureFile, const char* fxName);
-        int loadFromAtlas(const char *key);
+        int loadFromAtlas(const char *key, const char *fxName);
         void update();
         
     public:
         static void init();
         static void quit();
         static void flush();
-        
-        static void addAtlas(const char *file);
     };
     
     

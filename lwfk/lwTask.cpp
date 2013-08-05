@@ -22,6 +22,12 @@ namespace lw {
     void Task::quit()
     {
         assert(_pTaskMgr);
+        std::list<Task*>::iterator it = _pTaskMgr->running.begin();
+        std::list<Task*>::iterator itend = _pTaskMgr->running.end();
+        for (; it != itend; ++it) {
+            (*it)->vStop();
+            (*it)->_state = IDLE;
+        }
         delete _pTaskMgr;
         _pTaskMgr = NULL;
     }
@@ -131,7 +137,7 @@ namespace lw {
             _pTaskMgr->adding.push_back(this);
             _state = PENDING;
         } else {
-            lwerror("wrong state");
+            lwerror("wrong state: %d", _state);
         }
     }
 
@@ -142,7 +148,6 @@ namespace lw {
             _state = PENDING;
         } else {
             lwerror("wrong state");
-    
         }
     }
 

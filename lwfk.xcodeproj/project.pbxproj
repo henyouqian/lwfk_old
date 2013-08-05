@@ -41,6 +41,7 @@
 		B306FB031770A86800AA4963 /* PVRTVertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B306FADC1770A86800AA4963 /* PVRTVertex.cpp */; };
 		B306FB091770AD2F00AA4963 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B306FB081770AD2F00AA4963 /* OpenGLES.framework */; };
 		B3136E9717631495008E1EF9 /* lwCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3136E9617631495008E1EF9 /* lwCamera.cpp */; };
+		B32B458317AA8B1F004A574F /* lwThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B32B458117AA8B1F004A574F /* lwThread.cpp */; };
 		B34A6EA3176F7CA2002DBC4A /* image_DXT.c in Sources */ = {isa = PBXBuildFile; fileRef = B34A6E99176F7CA2002DBC4A /* image_DXT.c */; };
 		B34A6EA4176F7CA2002DBC4A /* image_helper.c in Sources */ = {isa = PBXBuildFile; fileRef = B34A6E9B176F7CA2002DBC4A /* image_helper.c */; };
 		B34A6EA5176F7CA2002DBC4A /* SOIL.c in Sources */ = {isa = PBXBuildFile; fileRef = B34A6E9D176F7CA2002DBC4A /* SOIL.c */; };
@@ -156,6 +157,8 @@
 		B306FB081770AD2F00AA4963 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		B3136E9517631495008E1EF9 /* lwCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwCamera.h; sourceTree = "<group>"; };
 		B3136E9617631495008E1EF9 /* lwCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwCamera.cpp; sourceTree = "<group>"; };
+		B32B458117AA8B1F004A574F /* lwThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwThread.cpp; sourceTree = "<group>"; };
+		B32B458217AA8B1F004A574F /* lwThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwThread.h; sourceTree = "<group>"; };
 		B34A6E99176F7CA2002DBC4A /* image_DXT.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = image_DXT.c; sourceTree = "<group>"; };
 		B34A6E9A176F7CA2002DBC4A /* image_DXT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = image_DXT.h; sourceTree = "<group>"; };
 		B34A6E9B176F7CA2002DBC4A /* image_helper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = image_helper.c; sourceTree = "<group>"; };
@@ -431,6 +434,8 @@
 		B3F760961759E24B00DE9BBF /* lwfk */ = {
 			isa = PBXGroup;
 			children = (
+				B32B458117AA8B1F004A574F /* lwThread.cpp */,
+				B32B458217AA8B1F004A574F /* lwThread.h */,
 				B37FC6501771BEE400A22473 /* lwSprite.cpp */,
 				B37FC64F1771BEE400A22473 /* lwSprite.h */,
 				B34A6EC917701026002DBC4A /* lwColor.cpp */,
@@ -546,6 +551,7 @@
 				B306FADF1770A86800AA4963 /* PVRShellAPI.cpp in Sources */,
 				B306FAE51770A86800AA4963 /* PVRShell.cpp in Sources */,
 				B306FAE71770A86800AA4963 /* PVRTgles2Ext.cpp in Sources */,
+				B32B458317AA8B1F004A574F /* lwThread.cpp in Sources */,
 				B306FAF61770A86800AA4963 /* PVRTPFXParser.cpp in Sources */,
 				B306FAED1770A86800AA4963 /* PVRTBoneBatch.cpp in Sources */,
 				B306FADE1770A86800AA4963 /* EAGLView.mm in Sources */,

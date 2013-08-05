@@ -4,7 +4,10 @@
 void lwapp_init();
 void lwapp_quit();
 
-PVRTVec2 getScreenSize();
-const char* getReadPath();
+namespace lw {
+    PVRTVec2 getScreenSize();
+    const char* getReadPath();
+}
+
 
 #endif //__LW_APP_H__

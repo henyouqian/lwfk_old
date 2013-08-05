@@ -1,0 +1,9 @@
+<lwmdl pod="girl.pod">
+    <mesh id="0" fxFile="phong.lwfx" fxName="phong">
+        <input name="u_texture" type="TEXTURE0" value="girl.png"/>
+        <input name="u_shininess" type="FLOAT" value="600"/>
+        <input name="u_ambient" type="FLOAT" value="0.5"/>
+        <input name="u_diffuse" type="FLOAT" value="0.5"/>
+        <input name="u_specular" type="FLOAT" value="1.0"/>
+    </mesh>
+</lwmdl>

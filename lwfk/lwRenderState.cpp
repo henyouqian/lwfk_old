@@ -37,7 +37,7 @@ namespace lw {
         class Cleaner{
         public:
             Cleaner () {
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                
             }
             ~Cleaner() {
                 std::vector<Cmd*>::iterator it = _setCmds->begin();
@@ -105,13 +105,14 @@ namespace lw {
     };
     
     void rsBlendFunc(GLenum sfactor, GLenum dfactor) {
-//        if (sfactor == GL_SRC_ALPHA || dfactor == GL_ONE_MINUS_SRC_ALPHA) {
+        glBlendFunc(sfactor, dfactor);
+//        if (sfactor == GL_SRC_ALPHA && dfactor == GL_ONE_MINUS_SRC_ALPHA) {
 //            return;
 //        }
-        CmdBlendFunc *pCmd = new CmdBlendFunc(sfactor, dfactor);
-        pCmd->addTo(_setCmds);
-        CmdBlendFunc *pCmdReset = new CmdBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        pCmdReset->addTo(_resetCmds);
+//        CmdBlendFunc *pCmd = new CmdBlendFunc(sfactor, dfactor);
+//        pCmd->addTo(_setCmds);
+//        CmdBlendFunc *pCmdReset = new CmdBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//        pCmdReset->addTo(_resetCmds);
     }
     
     
@@ -158,11 +159,11 @@ namespace lw {
     };
     
     void rsDepthMask(bool enable) {
-        if (!enable)
+        if (enable)
             return;
-        CmdDepthMask *pCmd = new CmdDepthMask(true);
+        CmdDepthMask *pCmd = new CmdDepthMask(false);
         pCmd->addTo(_setCmds);
-        CmdDepthMask *pCmdReset = new CmdDepthMask(false);
+        CmdDepthMask *pCmdReset = new CmdDepthMask(true);
         pCmdReset->addTo(_resetCmds);
     }
     
@@ -204,6 +205,16 @@ namespace lw {
         std::vector<Cmd*>* other = _setCmds;
         _setCmds = _resetCmds;
         _resetCmds = other;
+    }
+    
+    void rsInit() {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//        glDisable(GL_BLEND);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        glDepthFunc(GL_LESS);
     }
 
     //======================================
