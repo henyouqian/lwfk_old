@@ -7,12 +7,13 @@
 #include "lwfk/lwSprite.h"
 #include "lwfk/lwTexture.h"
 #include "lwfk/lwApp.h"
+#include "lwfk/lwSound.h"
 
 #include "PVR/tools/PVRTResourceFile.h"
 #include <dirent.h>
 
 struct Tile {
-    Tile(const char *file, float x, float y, float u, float v, float w, float h, float rotate, float scale);
+    Tile(const char *file, float x, float y, float u, float v, float w, float h, float rotate, float scale, int index);
     ~Tile();
     
     void update();
@@ -21,6 +22,7 @@ struct Tile {
     void setX(float x);
     void setY(float y);
     
+    int index;
     lw::Sprite * pSprite;
     float offsetX;
     float x, y;
@@ -32,7 +34,7 @@ struct Tile {
     float toY;
 };
 
-Tile::Tile(const char *file, float xx, float yy, float u, float v, float w, float h, float rotate, float scale) {
+Tile::Tile(const char *file, float xx, float yy, float u, float v, float w, float h, float rotate, float scale, int idx) {
     pSprite = lw::Sprite::createFromFile(file, "normal");
     assert(pSprite);
     pSprite->setUV(u, v, w, h);
@@ -45,6 +47,7 @@ Tile::Tile(const char *file, float xx, float yy, float u, float v, float w, floa
     pTouch = NULL;
     touchOffsetY = 0;
     t = 1.f;
+    index = idx;
 }
 
 Tile::~Tile() {
@@ -92,14 +95,28 @@ private:
     const lw::Touch *_pTouch;
     Tile *_pLastTouched;
     float _blockHeight;
+    float _boundX;
+    float _boundY;
+    float _boundW;
+    float _boundH;
+    int _blockNum;
+    lw::Sound *_pSndTick;
+
 };
 
 SliderGame::SliderGame():_pTouch(NULL) {
-    
+    _boundX = 0;
+    _boundY = 0;
+    _boundW = 640;
+    _boundH = 960;
+    _blockNum = 10;
+
+    _pSndTick = new lw::Sound("button-50.wav");
 }
 
 SliderGame::~SliderGame() {
     clear();
+    delete _pSndTick;
 }
 
 void SliderGame::load(const char *file) {
@@ -107,12 +124,7 @@ void SliderGame::load(const char *file) {
     _pLastTouched = NULL;
     
     lwinfo("xxxxx:%s", file);
-    float boundX = 0;
-    float boundY = 0;
-    float boundW = 640;
-    float boundH = 960;
-    float blockNum = 10;
-    
+        
     lw::TextureRes *pTexture = lw::TextureRes::create(file);
     float textureWidth = (float)pTexture->getWidth();
     float textureHeight = (float)pTexture->getHeight();
@@ -121,46 +133,46 @@ void SliderGame::load(const char *file) {
     float uvw, uvh;
     
     if (textureWidth <= textureHeight) {
-        if (textureWidth/textureHeight <= boundW/boundH) {
+        if (textureWidth/textureHeight <= _boundW/_boundH) {
             uvw = textureWidth;
-            uvh = textureWidth * boundH / boundW;
+            uvh = textureWidth * _boundH / _boundW;
             uvu = 0.f;
             uvv = (textureHeight - uvh) * .5f;
         } else {
-            uvw = textureHeight * boundW / boundH;
+            uvw = textureHeight * _boundW / _boundH;
             uvh = textureHeight;
             uvu = (textureWidth - uvw) * .5f;
             uvv = 0.f;
         }
-        float blockUVH = uvh/blockNum;
-        _blockHeight = boundH/blockNum;
+        float blockUVH = uvh/_blockNum;
+        _blockHeight = _boundH/_blockNum;
         float y = uvv;
-        float scale = boundW / uvw;
-        for (int i = 0; i < blockNum; ++i) {
-            Tile *pTile = new Tile(file, 0, boundY+i*_blockHeight, uvu, y, uvw, blockUVH, 0, scale);
+        float scale = _boundW / uvw;
+        for (int i = 0; i < _blockNum; ++i) {
+            Tile *pTile = new Tile(file, 0, _boundY+i*_blockHeight, uvu, y, uvw, blockUVH, 0, scale, i);
             _tiles.push_back(pTile);
             y += blockUVH;
         }
     } else {
         float rotate = -M_PI_2;
-        float offsetX = boundW;
-        if (textureWidth/textureHeight <= boundH/boundW) {
+        float offsetX = _boundW;
+        if (textureWidth/textureHeight <= _boundH/_boundW) {
             uvw = textureWidth;
-            uvh = textureWidth * boundW / boundH;
+            uvh = textureWidth * _boundW / _boundH;
             uvu = 0.f;
             uvv = (textureHeight - uvh) * .5f;
         } else {
-            uvw = textureHeight * boundH / boundW;
+            uvw = textureHeight * _boundH / _boundW;
             uvh = textureHeight;
             uvu = (textureWidth - uvw) * .5f;
             uvv = 0.f;
         }
-        float blockUVW = uvw/blockNum;
-        _blockHeight = boundH/blockNum;
+        float blockUVW = uvw/_blockNum;
+        _blockHeight = _boundH/_blockNum;
         float x = uvu;
-        float scale = boundH / uvw;
-        for (int i = 0; i < blockNum; ++i) {
-            Tile *pTile = new Tile(file, boundX+offsetX, boundY+i*_blockHeight, x, uvv, blockUVW, uvh, rotate, scale);
+        float scale = _boundH / uvw;
+        for (int i = 0; i < _blockNum; ++i) {
+            Tile *pTile = new Tile(file, _boundX+offsetX, _boundY+i*_blockHeight, x, uvv, blockUVW, uvh, rotate, scale, i);
             _tiles.push_back(pTile);
             x += blockUVW;
         }
@@ -226,11 +238,39 @@ void SliderGame::touchMoved(const lw::Touch &touch) {
     if (_pTouch != &touch)
         return;
     
-    std::vector<Tile*>::iterator it = _tiles.begin();
-    std::vector<Tile*>::iterator itend = _tiles.end();
-    for (;it != itend; ++it) {
-        if ((*it)->pTouch == _pTouch) {
-            (*it)->setY(touch.y - (*it)->touchOffsetY);
+    int len = (int)_tiles.size();
+    for (int i = 0;i < len; ++i) {
+        Tile *pTile = _tiles[i];
+        if (pTile->pTouch == _pTouch) {
+            pTile->setY(touch.y - pTile->touchOffsetY);
+            
+            //check tiles order change
+            float y = pTile->y - _boundY;
+            y = y + _blockHeight * .5f;
+            int posIdx = floorf(y/_blockHeight);
+            posIdx = std::max(0, std::min(_blockNum-1, posIdx));
+            if (posIdx != i) {
+                _pSndTick->play();
+                
+                std::vector<Tile*>::iterator it = _tiles.begin();
+                it += i;
+                _tiles.erase(it);
+                it = _tiles.begin();
+                it += posIdx;
+                _tiles.insert(it, pTile);
+                
+                for (int iTile = 0; iTile < len; ++iTile) {
+                    Tile *pTile = _tiles[iTile];
+                    if (pTile->pTouch == NULL) {
+                        float toY = _boundY + _blockHeight * iTile;
+                        if (pTile->y != toY && pTile->toY != toY) {
+                            pTile->fromY = pTile->y;
+                            pTile->toY = toY;
+                            pTile->t = 0.f;
+                        }
+                    }
+                }
+            }
             break;
         }
     }
@@ -240,17 +280,16 @@ void SliderGame::touchEnded(const lw::Touch &touch) {
     if (_pTouch == NULL || _pTouch != &touch)
         return;
     
-    std::vector<Tile*>::iterator it = _tiles.begin();
-    std::vector<Tile*>::iterator itend = _tiles.end();
-    for (;it != itend; ++it) {
-        Tile *pTile = *it;
+    int len = (int)_tiles.size();
+    for (int i = 0;i < len; ++i) {
+        Tile *pTile = _tiles[i];
         if (pTile->pTouch == _pTouch) {
             _pTouch = pTile->pTouch = NULL;
             pTile->setX(0);
             
             pTile->t = 0;
             pTile->fromY = pTile->y;
-            pTile->toY = pTile->y - 100.f;
+            pTile->toY = _boundY + _blockHeight * i;
             _pLastTouched = pTile;
             break;
         }

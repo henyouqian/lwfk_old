@@ -3,9 +3,11 @@
 #include "lwTask.h"
 #include "lwSprite.h"
 #include "lwRenderState.h"
+#include "lwSound.h"
+#include "lwLog.h"
 #include "PVRShell.h"
 #include "PVRTResourceFile.h"
-#include "lwLog.h"
+
 
 namespace {
     class App : public PVRShell
@@ -18,6 +20,7 @@ namespace {
             
             lw::rsInit();
             lw::Sprite::init();
+            lw::soundInit();
             lw::Task::init();
             lwapp_init();
             return true;
@@ -35,6 +38,7 @@ namespace {
         virtual bool QuitApplication() {
             lwapp_quit();
             lw::Task::quit();
+            lw::soundQuit();
             lw::Sprite::quit();
             return true;
         }

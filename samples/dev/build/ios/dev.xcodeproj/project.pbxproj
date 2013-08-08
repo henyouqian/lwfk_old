@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B302475F17B3FE4C004E727B /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B302475E17B3FE4C004E727B /* OpenAL.framework */; };
+		B302476217B40CF9004E727B /* button-50.wav in Resources */ = {isa = PBXBuildFile; fileRef = B302476117B40CF9004E727B /* button-50.wav */; };
+		B302476417B412C8004E727B /* default.wav in Resources */ = {isa = PBXBuildFile; fileRef = B302476317B412C8004E727B /* default.wav */; };
 		B329F4C317ACC5F100F2570E /* img in Resources */ = {isa = PBXBuildFile; fileRef = B329F4C217ACC5F100F2570E /* img */; };
 		B340756D17717A9700F53C2B /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = B340756B17717A9700F53C2B /* AppController.mm */; };
 		B3629BD517ACB80D00A7A138 /* tmp in Resources */ = {isa = PBXBuildFile; fileRef = B3629BD417ACB80D00A7A138 /* tmp */; };
@@ -65,6 +68,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B302475E17B3FE4C004E727B /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		B302476117B40CF9004E727B /* button-50.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "button-50.wav"; sourceTree = "<group>"; };
+		B302476317B412C8004E727B /* default.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = default.wav; sourceTree = "<group>"; };
 		B329F4C217ACC5F100F2570E /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; path = img; sourceTree = "<group>"; };
 		B340756B17717A9700F53C2B /* AppController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppController.mm; sourceTree = "<group>"; };
 		B340756C17717A9700F53C2B /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
@@ -118,6 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B37FC67F177405DE00A22473 /* liblwfk.a in Frameworks */,
+				B302475F17B3FE4C004E727B /* OpenAL.framework in Frameworks */,
 				B3F513851770D20D00C92D76 /* QuartzCore.framework in Frameworks */,
 				B3F760B21759E2DE00DE9BBF /* UIKit.framework in Frameworks */,
 				B3F760B41759E2DE00DE9BBF /* Foundation.framework in Frameworks */,
@@ -129,9 +136,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B302476017B40CF9004E727B /* sound */ = {
+			isa = PBXGroup;
+			children = (
+				B302476317B412C8004E727B /* default.wav */,
+				B302476117B40CF9004E727B /* button-50.wav */,
+			);
+			path = sound;
+			sourceTree = "<group>";
+		};
 		B37FC65F1774047D00A22473 /* resource */ = {
 			isa = PBXGroup;
 			children = (
+				B302476017B40CF9004E727B /* sound */,
 				B3D260491795BD8F00C1D576 /* girl */,
 				B37FC6601774047D00A22473 /* effects */,
 				B37FC6671774047D00A22473 /* texture */,
@@ -234,6 +251,7 @@
 		B3F760B01759E2DE00DE9BBF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B302475E17B3FE4C004E727B /* OpenAL.framework */,
 				B3F513841770D20D00C92D76 /* QuartzCore.framework */,
 				B3F760B11759E2DE00DE9BBF /* UIKit.framework */,
 				B3F760B31759E2DE00DE9BBF /* Foundation.framework */,
@@ -348,6 +366,7 @@
 				B3D260501795BD8F00C1D576 /* girl.png in Resources */,
 				B3B45AF017A8CC6C006C002E /* btn9_common_down.png in Resources */,
 				B3B45AF717A8CC6C006C002E /* tt-0.png in Resources */,
+				B302476417B412C8004E727B /* default.wav in Resources */,
 				B3D260531795BD8F00C1D576 /* phong.lwfx in Resources */,
 				B3B45AF117A8CC6C006C002E /* btn9_common_up.png in Resources */,
 				B3D260521795BD8F00C1D576 /* girl.pvr in Resources */,
@@ -365,6 +384,7 @@
 				B3B45AF417A8CC6C006C002E /* goalKeeper.png in Resources */,
 				B3F760CC1759E2DE00DE9BBF /* Default-568h@2x.png in Resources */,
 				B3D260511795BD8F00C1D576 /* girl.pod in Resources */,
+				B302476217B40CF9004E727B /* button-50.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

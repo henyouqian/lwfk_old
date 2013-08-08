@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B302474617B3F7B5004E727B /* lwSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B302474417B3F7B5004E727B /* lwSound.cpp */; };
+		B302475417B3F918004E727B /* alutBufferData.c in Sources */ = {isa = PBXBuildFile; fileRef = B302474917B3F918004E727B /* alutBufferData.c */; };
+		B302475517B3F918004E727B /* alutCodec.c in Sources */ = {isa = PBXBuildFile; fileRef = B302474A17B3F918004E727B /* alutCodec.c */; };
+		B302475617B3F918004E727B /* alutError.c in Sources */ = {isa = PBXBuildFile; fileRef = B302474B17B3F918004E727B /* alutError.c */; };
+		B302475717B3F918004E727B /* alutInit.c in Sources */ = {isa = PBXBuildFile; fileRef = B302474C17B3F918004E727B /* alutInit.c */; };
+		B302475817B3F918004E727B /* alutInputStream.c in Sources */ = {isa = PBXBuildFile; fileRef = B302474D17B3F918004E727B /* alutInputStream.c */; };
+		B302475917B3F918004E727B /* alutLoader.c in Sources */ = {isa = PBXBuildFile; fileRef = B302474F17B3F918004E727B /* alutLoader.c */; };
+		B302475A17B3F918004E727B /* alutOutputStream.c in Sources */ = {isa = PBXBuildFile; fileRef = B302475017B3F918004E727B /* alutOutputStream.c */; };
+		B302475B17B3F918004E727B /* alutUtil.c in Sources */ = {isa = PBXBuildFile; fileRef = B302475117B3F918004E727B /* alutUtil.c */; };
+		B302475C17B3F918004E727B /* alutVersion.c in Sources */ = {isa = PBXBuildFile; fileRef = B302475217B3F918004E727B /* alutVersion.c */; };
+		B302475D17B3F918004E727B /* alutWaveform.c in Sources */ = {isa = PBXBuildFile; fileRef = B302475317B3F918004E727B /* alutWaveform.c */; };
 		B306FADE1770A86800AA4963 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B306FA761770A86800AA4963 /* EAGLView.mm */; };
 		B306FADF1770A86800AA4963 /* PVRShellAPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B306FA781770A86800AA4963 /* PVRShellAPI.cpp */; };
 		B306FAE41770A86800AA4963 /* PVRShellOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B306FA851770A86800AA4963 /* PVRShellOS.cpp */; };
@@ -77,6 +88,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B302474417B3F7B5004E727B /* lwSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwSound.cpp; sourceTree = "<group>"; };
+		B302474517B3F7B5004E727B /* lwSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwSound.h; sourceTree = "<group>"; };
+		B302474817B3F918004E727B /* alut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alut.h; sourceTree = "<group>"; };
+		B302474917B3F918004E727B /* alutBufferData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutBufferData.c; sourceTree = "<group>"; };
+		B302474A17B3F918004E727B /* alutCodec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutCodec.c; sourceTree = "<group>"; };
+		B302474B17B3F918004E727B /* alutError.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutError.c; sourceTree = "<group>"; };
+		B302474C17B3F918004E727B /* alutInit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutInit.c; sourceTree = "<group>"; };
+		B302474D17B3F918004E727B /* alutInputStream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutInputStream.c; sourceTree = "<group>"; };
+		B302474E17B3F918004E727B /* alutInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alutInternal.h; sourceTree = "<group>"; };
+		B302474F17B3F918004E727B /* alutLoader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutLoader.c; sourceTree = "<group>"; };
+		B302475017B3F918004E727B /* alutOutputStream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutOutputStream.c; sourceTree = "<group>"; };
+		B302475117B3F918004E727B /* alutUtil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutUtil.c; sourceTree = "<group>"; };
+		B302475217B3F918004E727B /* alutVersion.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutVersion.c; sourceTree = "<group>"; };
+		B302475317B3F918004E727B /* alutWaveform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = alutWaveform.c; sourceTree = "<group>"; };
 		B306FA751770A86800AA4963 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
 		B306FA761770A86800AA4963 /* EAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
 		B306FA771770A86800AA4963 /* OpenGL_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGL_Internal.h; sourceTree = "<group>"; };
@@ -218,6 +243,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B302474717B3F918004E727B /* ALUT */ = {
+			isa = PBXGroup;
+			children = (
+				B302474817B3F918004E727B /* alut.h */,
+				B302474917B3F918004E727B /* alutBufferData.c */,
+				B302474A17B3F918004E727B /* alutCodec.c */,
+				B302474B17B3F918004E727B /* alutError.c */,
+				B302474C17B3F918004E727B /* alutInit.c */,
+				B302474D17B3F918004E727B /* alutInputStream.c */,
+				B302474E17B3F918004E727B /* alutInternal.h */,
+				B302474F17B3F918004E727B /* alutLoader.c */,
+				B302475017B3F918004E727B /* alutOutputStream.c */,
+				B302475117B3F918004E727B /* alutUtil.c */,
+				B302475217B3F918004E727B /* alutVersion.c */,
+				B302475317B3F918004E727B /* alutWaveform.c */,
+			);
+			path = ALUT;
+			sourceTree = "<group>";
+		};
 		B306FA701770A86800AA4963 /* PVR */ = {
 			isa = PBXGroup;
 			children = (
@@ -389,6 +433,7 @@
 		B3A7EFEE175AFF2A002DE3F0 /* libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B302474717B3F918004E727B /* ALUT */,
 				B306FA701770A86800AA4963 /* PVR */,
 				B34A6E98176F7CA2002DBC4A /* soil */,
 				B3A7EFF8175AFF2A002DE3F0 /* tinyxml2 */,
@@ -434,6 +479,8 @@
 		B3F760961759E24B00DE9BBF /* lwfk */ = {
 			isa = PBXGroup;
 			children = (
+				B302474417B3F7B5004E727B /* lwSound.cpp */,
+				B302474517B3F7B5004E727B /* lwSound.h */,
 				B32B458117AA8B1F004A574F /* lwThread.cpp */,
 				B32B458217AA8B1F004A574F /* lwThread.h */,
 				B37FC6501771BEE400A22473 /* lwSprite.cpp */,
@@ -529,20 +576,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B302475517B3F918004E727B /* alutCodec.c in Sources */,
 				B306FB031770A86800AA4963 /* PVRTVertex.cpp in Sources */,
 				B306FAE91770A86800AA4963 /* PVRTPFXSemantics.cpp in Sources */,
 				B306FB001770A86800AA4963 /* PVRTTriStrip.cpp in Sources */,
+				B302475417B3F918004E727B /* alutBufferData.c in Sources */,
 				B306FAF21770A86800AA4963 /* PVRTMatrixF.cpp in Sources */,
 				B3F760EA1759E3B900DE9BBF /* lwApp.cpp in Sources */,
+				B302475A17B3F918004E727B /* alutOutputStream.c in Sources */,
 				B306FAFA1770A86800AA4963 /* PVRTResourceFile.cpp in Sources */,
 				B306FAEE1770A86800AA4963 /* PVRTDecompress.cpp in Sources */,
 				B34A6EA917700929002DBC4A /* lwTexture.cpp in Sources */,
+				B302475917B3F918004E727B /* alutLoader.c in Sources */,
 				B306FAEA1770A86800AA4963 /* PVRTPrint3DAPI.cpp in Sources */,
 				B34A6EA3176F7CA2002DBC4A /* image_DXT.c in Sources */,
 				B3FCDD35179D66D000E4C70B /* lwRenderState.cpp in Sources */,
 				B37FC64E1771BB4900A22473 /* PVRTPrint3D.cpp in Sources */,
 				B306FAFF1770A86800AA4963 /* PVRTTrans.cpp in Sources */,
 				B34A6EA5176F7CA2002DBC4A /* SOIL.c in Sources */,
+				B302474617B3F7B5004E727B /* lwSound.cpp in Sources */,
 				B3FDD0E3176A369000B82210 /* lwTask.cpp in Sources */,
 				B306FAF91770A86800AA4963 /* PVRTQuaternionX.cpp in Sources */,
 				B306FAF31770A86800AA4963 /* PVRTMatrixX.cpp in Sources */,
@@ -552,11 +604,16 @@
 				B306FAE51770A86800AA4963 /* PVRShell.cpp in Sources */,
 				B306FAE71770A86800AA4963 /* PVRTgles2Ext.cpp in Sources */,
 				B32B458317AA8B1F004A574F /* lwThread.cpp in Sources */,
+				B302475D17B3F918004E727B /* alutWaveform.c in Sources */,
 				B306FAF61770A86800AA4963 /* PVRTPFXParser.cpp in Sources */,
 				B306FAED1770A86800AA4963 /* PVRTBoneBatch.cpp in Sources */,
 				B306FADE1770A86800AA4963 /* EAGLView.mm in Sources */,
+				B302475B17B3F918004E727B /* alutUtil.c in Sources */,
 				B306FB021770A86800AA4963 /* PVRTVector.cpp in Sources */,
 				B306FAF01770A86800AA4963 /* PVRTFixedPoint.cpp in Sources */,
+				B302475717B3F918004E727B /* alutInit.c in Sources */,
+				B302475C17B3F918004E727B /* alutVersion.c in Sources */,
+				B302475817B3F918004E727B /* alutInputStream.c in Sources */,
 				B306FAE41770A86800AA4963 /* PVRShellOS.cpp in Sources */,
 				B306FAE81770A86800AA4963 /* PVRTPFXParserAPI.cpp in Sources */,
 				B370842D178C825700C71C5D /* lwMaterial.cpp in Sources */,
@@ -572,6 +629,7 @@
 				B306FAFB1770A86800AA4963 /* PVRTShadowVol.cpp in Sources */,
 				B3A7F009175B0408002DE3F0 /* lwEffects.cpp in Sources */,
 				B37FC6511771BEE400A22473 /* lwSprite.cpp in Sources */,
+				B302475617B3F918004E727B /* alutError.c in Sources */,
 				B37FC6591773419C00A22473 /* lwTouch.cpp in Sources */,
 				B306FAEB1770A86800AA4963 /* PVRTShader.cpp in Sources */,
 				B34A6ECB17701026002DBC4A /* lwColor.cpp in Sources */,
@@ -654,6 +712,10 @@
 					"DEBUG=1",
 					BUILD_OGLES2,
 					TARGET_OS_IPHONE,
+					HAVE_STAT,
+					HAVE_NANOSLEEP,
+					HAVE_TIME_H,
+					HAVE_STDINT_H,
 				);
 				HEADER_SEARCH_PATHS = (
 					.,
@@ -676,6 +738,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					BUILD_OGLES2,
 					TARGET_OS_IPHONE,
+					HAVE_STAT,
+					HAVE_NANOSLEEP,
+					HAVE_TIME_H,
+					HAVE_STDINT_H,
 				);
 				HEADER_SEARCH_PATHS = (
 					.,
