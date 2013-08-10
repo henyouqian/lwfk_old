@@ -1,6 +1,5 @@
 #include "lwPrefix.h"
 #include "lwTexture.h"
-#include "lwFileSys.h"
 #include "lwLog.h"
 #include "soil/SOIL.h"
 #include <map>

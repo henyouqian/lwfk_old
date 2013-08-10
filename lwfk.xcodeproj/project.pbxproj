@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B30067AD17B50563004ED93D /* lwText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B30067AB17B50563004ED93D /* lwText.cpp */; };
 		B302474617B3F7B5004E727B /* lwSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B302474417B3F7B5004E727B /* lwSound.cpp */; };
 		B302475417B3F918004E727B /* alutBufferData.c in Sources */ = {isa = PBXBuildFile; fileRef = B302474917B3F918004E727B /* alutBufferData.c */; };
 		B302475517B3F918004E727B /* alutCodec.c in Sources */ = {isa = PBXBuildFile; fileRef = B302474A17B3F918004E727B /* alutCodec.c */; };
@@ -88,6 +89,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B30067AB17B50563004ED93D /* lwText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwText.cpp; sourceTree = "<group>"; };
+		B30067AC17B50563004ED93D /* lwText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwText.h; sourceTree = "<group>"; };
 		B302474417B3F7B5004E727B /* lwSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lwSound.cpp; sourceTree = "<group>"; };
 		B302474517B3F7B5004E727B /* lwSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwSound.h; sourceTree = "<group>"; };
 		B302474817B3F918004E727B /* alut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alut.h; sourceTree = "<group>"; };
@@ -479,6 +482,8 @@
 		B3F760961759E24B00DE9BBF /* lwfk */ = {
 			isa = PBXGroup;
 			children = (
+				B30067AB17B50563004ED93D /* lwText.cpp */,
+				B30067AC17B50563004ED93D /* lwText.h */,
 				B302474417B3F7B5004E727B /* lwSound.cpp */,
 				B302474517B3F7B5004E727B /* lwSound.h */,
 				B32B458117AA8B1F004A574F /* lwThread.cpp */,
@@ -589,6 +594,7 @@
 				B34A6EA917700929002DBC4A /* lwTexture.cpp in Sources */,
 				B302475917B3F918004E727B /* alutLoader.c in Sources */,
 				B306FAEA1770A86800AA4963 /* PVRTPrint3DAPI.cpp in Sources */,
+				B30067AD17B50563004ED93D /* lwText.cpp in Sources */,
 				B34A6EA3176F7CA2002DBC4A /* image_DXT.c in Sources */,
 				B3FCDD35179D66D000E4C70B /* lwRenderState.cpp in Sources */,
 				B37FC64E1771BB4900A22473 /* PVRTPrint3D.cpp in Sources */,

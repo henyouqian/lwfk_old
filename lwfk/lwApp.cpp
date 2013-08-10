@@ -62,13 +62,13 @@ PVRShell* NewDemo()
 }
 
 namespace lw {
-    PVRTVec2 getScreenSize() {
+    PVRTVec2 screenSize() {
         float width = (float)_app->PVRShellGet(prefWidth);
         float height = (float)_app->PVRShellGet(prefHeight);
         return PVRTVec2(width, height);
     }
     
-    const char* getReadPath() {
+    const char* readPath() {
         return (const char*)_app->PVRShellGet(prefReadPath);
     }
 }

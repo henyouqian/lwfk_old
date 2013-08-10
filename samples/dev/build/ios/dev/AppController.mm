@@ -43,6 +43,7 @@ const int kFPS = 60.0;
 		[_renderTimer invalidate];
         //for ARC
 		//[_renderTimer release];
+        _renderTimer = nil;
 	}
 	
 	//Swap framebuffer

@@ -3,7 +3,6 @@
 #include "sliderTask.h"
 #include "lwfk/lwlog.h"
 #include "lwfk/lwEffects.h"
-#include "lwfk/lwFileSys.h"
 #include "lwfk/lwSprite.h"
 #include "lwfk/lwModel.h"
 #include "lwfk/lwCamera.h"

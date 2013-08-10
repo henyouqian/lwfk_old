@@ -3,11 +3,11 @@
 #include "spriteTask.h"
 #include "lwfk/lwlog.h"
 #include "lwfk/lwEffects.h"
-#include "lwfk/lwFileSys.h"
 #include "lwfk/lwSprite.h"
 #include "lwfk/lwTexture.h"
 #include "lwfk/lwApp.h"
 #include "lwfk/lwSound.h"
+#include "lwfk/lwText.h"
 
 #include "PVR/tools/PVRTResourceFile.h"
 #include <dirent.h>
@@ -101,22 +101,43 @@ private:
     float _boundH;
     int _blockNum;
     lw::Sound *_pSndTick;
-
+    lw::Text *_pLabel;
 };
 
 SliderGame::SliderGame():_pTouch(NULL) {
+    PVRTVec2 ss = lw::screenSize();
     _boundX = 0;
     _boundY = 0;
-    _boundW = 640;
-    _boundH = 960;
+    _boundW = ss.x;
+    _boundH = ss.y;
     _blockNum = 10;
 
     _pSndTick = new lw::Sound("button-50.wav");
+    
+    _pLabel = lw::Text::create("a.fnt");
+    _pLabel->setPos(0, 0);
+    _pLabel->setText("henyouqian");
+    _pLabel->setColor(lw::Color(1.f, 0.f, 0.f, 1.f));
 }
 
 SliderGame::~SliderGame() {
     clear();
     delete _pSndTick;
+    delete _pLabel;
+}
+
+void shuffle(std::vector<int> &vec, int num)
+{
+    vec.clear();
+    std::vector<int> v;
+    for (int i = 0; i < num; ++i) {
+        v.push_back(i);
+    }
+    for (int i = 0; i < num; ++i) {
+        int r = rand() % v.size();
+        vec.push_back(v[r]);
+        v.erase(v.begin()+r);
+    }
 }
 
 void SliderGame::load(const char *file) {
@@ -132,6 +153,9 @@ void SliderGame::load(const char *file) {
     float uvu, uvv;
     float uvw, uvh;
     
+    std::vector<int> _idxs;
+    shuffle(_idxs, _blockNum);
+    
     if (textureWidth <= textureHeight) {
         if (textureWidth/textureHeight <= _boundW/_boundH) {
             uvw = textureWidth;
@@ -146,12 +170,10 @@ void SliderGame::load(const char *file) {
         }
         float blockUVH = uvh/_blockNum;
         _blockHeight = _boundH/_blockNum;
-        float y = uvv;
         float scale = _boundW / uvw;
         for (int i = 0; i < _blockNum; ++i) {
-            Tile *pTile = new Tile(file, 0, _boundY+i*_blockHeight, uvu, y, uvw, blockUVH, 0, scale, i);
+            Tile *pTile = new Tile(file, 0, _boundY+i*_blockHeight, uvu, uvv+_idxs[i]*blockUVH, uvw, blockUVH, 0, scale, _idxs[i]);
             _tiles.push_back(pTile);
-            y += blockUVH;
         }
     } else {
         float rotate = -M_PI_2;
@@ -169,12 +191,10 @@ void SliderGame::load(const char *file) {
         }
         float blockUVW = uvw/_blockNum;
         _blockHeight = _boundH/_blockNum;
-        float x = uvu;
         float scale = _boundH / uvw;
         for (int i = 0; i < _blockNum; ++i) {
-            Tile *pTile = new Tile(file, _boundX+offsetX, _boundY+i*_blockHeight, x, uvv, blockUVW, uvh, rotate, scale, i);
+            Tile *pTile = new Tile(file, _boundX+offsetX, _boundY+i*_blockHeight, uvu+_idxs[i]*blockUVW, uvv, blockUVW, uvh, rotate, scale, _idxs[i]);
             _tiles.push_back(pTile);
-            x += blockUVW;
         }
     }
     
@@ -212,6 +232,8 @@ void SliderGame::draw() {
     if (pTouched) {
         pTouched->draw();
     }
+    
+    _pLabel->draw();
 }
 
 void SliderGame::touchBegan(const lw::Touch &touch) {
@@ -354,13 +376,23 @@ void SliderTask::vUpdate() {
 
 
 void SliderTask::vDraw() {
-    glClearColor(1.f, 1.f, 0.f, 1.0f);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     _pSliderGame->draw();
 }
 
 void SliderTask::vTouchBegan(const lw::Touch &touch) {
+    if (touch.y > lw::screenSize().y - 40 && touch.x < 40) {
+        _pSliderGame->clear();
+        //random pick a image
+        srand(time(NULL));
+        int imgIdx = rand() % _fileNames.size();
+        std::string path = IMAGE_FOLDER;
+        path.append(_fileNames[imgIdx]);
+        _pSliderGame->load(path.c_str());
+        return;
+    }
     _pSliderGame->touchBegan(touch);
 }
 
@@ -370,14 +402,7 @@ void SliderTask::vTouchMoved(const lw::Touch &touch) {
 
 void SliderTask::vTouchEnded(const lw::Touch &touch)  {
     _pSliderGame->touchEnded(touch);
-    
-//    _pSliderGame->clear();
-//    //random pick a image
-//    srand(time(NULL));
-//    int imgIdx = rand() % _fileNames.size();
-//    std::string path = IMAGE_FOLDER;
-//    path.append(_fileNames[imgIdx]);
-//    _pSliderGame->load(path.c_str());
+
 }
 
 void SliderTask::vTouchCanceled(const lw::Touch &touch)  {

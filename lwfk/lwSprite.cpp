@@ -396,9 +396,9 @@ namespace lw {
     void Sprite::init() {
         _pvb = new SpriteVertexBuffer();
         
-        PVRTVec2 screenSize = getScreenSize();
+        PVRTVec2 ss = screenSize();
         _camera.lookat(PVRTVec3(0.f, 0.f, 100.f), PVRTVec3(0.f, 0.f, 0.f), PVRTVec3(0.f, 1.f, 0.f));
-        _camera.ortho(screenSize.x, screenSize.y, 0, 200.f);
+        _camera.ortho(ss.x, ss.y, 0, 200.f);
         
         loadAtlasConf();
     }

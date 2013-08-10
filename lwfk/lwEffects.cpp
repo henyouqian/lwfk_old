@@ -1,6 +1,5 @@
 #include "lwPrefix.h"
 #include "lwEffects.h"
-#include "lwFileSys.h"
 #include "libraries/tinyxml2/tinyxml2.h"
 #include "lwLog.h"
 #include "PVRTResourceFile.h"

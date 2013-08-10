@@ -5,8 +5,8 @@
 
 void lwapp_init()
 {
-    //gSpriteTask.start();
-    gSliderTask.start();
+    gSpriteTask.start();
+    //gSliderTask.start();
 }
 
 void lwapp_quit()
