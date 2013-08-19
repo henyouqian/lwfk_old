@@ -28,6 +28,7 @@ LOCAL_SRC_FILES := \
 					lwfk/lwTask.cpp \
 					lwfk/lwTexture.cpp \
 					lwfk/lwTouch.cpp \
+					
 					libraries/soil/SOIL.c \
 				   	libraries/soil/image_DXT.c \
 				   	libraries/soil/image_helper.c \

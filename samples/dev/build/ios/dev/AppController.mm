@@ -43,7 +43,7 @@ const int kFPS = 60.0;
 		[_renderTimer invalidate];
         //for ARC
 		//[_renderTimer release];
-        _renderTimer = nil;
+        //_renderTimer = nil;
 	}
 	
 	//Swap framebuffer
@@ -250,6 +250,18 @@ const int kFPS = 60.0;
 //	
 //
 //	[super dealloc];
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    [_renderTimer invalidate];
+    _renderTimer = nil;
+    glFinish();
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    _renderTimer = [NSTimer scheduledTimerWithTimeInterval:(1.0 / kFPS) target:self selector:@selector(_renderGLScene) userInfo:nil repeats:YES];
 }
 
 // throws up a warning dialog

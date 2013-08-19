@@ -13,6 +13,8 @@
 		B329F4C317ACC5F100F2570E /* img in Resources */ = {isa = PBXBuildFile; fileRef = B329F4C217ACC5F100F2570E /* img */; };
 		B340756D17717A9700F53C2B /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = B340756B17717A9700F53C2B /* AppController.mm */; };
 		B3629BD517ACB80D00A7A138 /* tmp in Resources */ = {isa = PBXBuildFile; fileRef = B3629BD417ACB80D00A7A138 /* tmp */; };
+		B36A703917C24E2000003FB9 /* titleTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B36A703717C24E2000003FB9 /* titleTask.cpp */; };
+		B36A703B17C25EF700003FB9 /* title.png in Resources */ = {isa = PBXBuildFile; fileRef = B36A703A17C25EF700003FB9 /* title.png */; };
 		B37FC6691774047D00A22473 /* clod2.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B37FC6611774047D00A22473 /* clod2.lwfx */; };
 		B37FC66A1774047D00A22473 /* marchingCube.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B37FC6621774047D00A22473 /* marchingCube.lwfx */; };
 		B37FC66C1774047D00A22473 /* phongNormalMap.lwfx in Resources */ = {isa = PBXBuildFile; fileRef = B37FC6641774047D00A22473 /* phongNormalMap.lwfx */; };
@@ -77,6 +79,9 @@
 		B340756B17717A9700F53C2B /* AppController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppController.mm; sourceTree = "<group>"; };
 		B340756C17717A9700F53C2B /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		B3629BD417ACB80D00A7A138 /* tmp */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tmp; sourceTree = "<group>"; };
+		B36A703717C24E2000003FB9 /* titleTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = titleTask.cpp; sourceTree = "<group>"; };
+		B36A703817C24E2000003FB9 /* titleTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = titleTask.h; sourceTree = "<group>"; };
+		B36A703A17C25EF700003FB9 /* title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = title.png; sourceTree = "<group>"; };
 		B37FC6611774047D00A22473 /* clod2.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clod2.lwfx; sourceTree = "<group>"; };
 		B37FC6621774047D00A22473 /* marchingCube.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = marchingCube.lwfx; sourceTree = "<group>"; };
 		B37FC6641774047D00A22473 /* phongNormalMap.lwfx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = phongNormalMap.lwfx; sourceTree = "<group>"; };
@@ -181,6 +186,7 @@
 				B3629BD417ACB80D00A7A138 /* tmp */,
 				B3B45AE417A8CC6C006C002E /* tt */,
 				B3B45AED17A8CC6C006C002E /* tt-0.png */,
+				B36A703A17C25EF700003FB9 /* title.png */,
 				B3B45AEE17A8CC6C006C002E /* tt.atlas */,
 				B37FC6681774047D00A22473 /* img05.png */,
 			);
@@ -190,6 +196,8 @@
 		B37FC670177404C400A22473 /* task */ = {
 			isa = PBXGroup;
 			children = (
+				B36A703717C24E2000003FB9 /* titleTask.cpp */,
+				B36A703817C24E2000003FB9 /* titleTask.h */,
 				B37FC671177404C400A22473 /* sliderTask.cpp */,
 				B37FC672177404C400A22473 /* sliderTask.h */,
 				B37FC673177404C400A22473 /* spriteTask.cpp */,
@@ -400,6 +408,7 @@
 				B3F760CC1759E2DE00DE9BBF /* Default-568h@2x.png in Resources */,
 				B3B6097E17B5E75F0025B3F0 /* a.png in Resources */,
 				B3D260511795BD8F00C1D576 /* girl.pod in Resources */,
+				B36A703B17C25EF700003FB9 /* title.png in Resources */,
 				B302476217B40CF9004E727B /* button-50.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,6 +421,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B37FC675177404C400A22473 /* sliderTask.cpp in Sources */,
+				B36A703917C24E2000003FB9 /* titleTask.cpp in Sources */,
 				B37FC6851775668000A22473 /* app.cpp in Sources */,
 				B37FC676177404C400A22473 /* spriteTask.cpp in Sources */,
 				B340756D17717A9700F53C2B /* AppController.mm in Sources */,
